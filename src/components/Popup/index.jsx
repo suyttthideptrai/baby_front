@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorImage from '../../assets/icons/group12_x2.svg'
+import ErrorImage from '../../assets/icons/sidebar/financialPlanning_x2.svg'
 export default function Popup({ title, isShow, setIsShow, message, okCallback, error }) {
 
     const handleCancelClick = () => {

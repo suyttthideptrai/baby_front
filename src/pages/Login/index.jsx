@@ -12,41 +12,71 @@ import BicycleSym from './../../assets/symbols/bicycle.svg';
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage1, setErrorMessage1] = useState('');
 
   const handleUsernameChange = () => {
-    var username = document.getElementById("input-username").value;
+    const username = document.getElementById("input-username").value;
     setUsername(username);
+    if (username.length >= 5) {
+      setErrorMessage('');
+    } else {
+      setErrorMessage("Username must be at least 5 characters long.");
+    }
   };
   
   const handlePasswordChange = () => {
-    var password = document.getElementById("input-password").value;
-    setPassword(password);
+    const inputPassword = document.getElementById("input-password").value;
+    setPassword(inputPassword);
+    if (inputPassword.length >= 5) {
+      setErrorMessage1('');
+    } else {
+      setErrorMessage1("Password must be at least 5 characters long.");
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    axios.post("http://localhost:9999/api/v1/auth/authenticate", {
-      username: username,
-      password: password
-    })
-    .then(response => {
-      if (response.status === 200) {
-        console.log(response.data);
-        setPassword('');
-        alert("Login successful");
-        const token = response.data;
-        // Storing token in localStorage
-        localStorage.setItem('JWT', token);
-        onLogin()
-      } else {
-        alert("Login failed, wrong user credentials");
-      }
-    })
-    .catch(error => {
-      console.error(error);
-      alert("Error whilst sending request to server");
-    });
+    if(username == '' && password == '') {
+      setErrorMessage('Please complete all fields');
+    }else if(username.length < 6) {
+      setErrorMessage('Invalid username');
+    }else if(password.length < 6){
+      setErrorMessage('Invalid password');
+    }else{
+        axios.post("http://localhost:9999/api/v1/auth/authenticate", {
+        username: username,
+        password: password
+      })
+      .then(response => {
+        if (response.status === 200) {
+          console.log(response.data);
+          setPassword('');
+          const token = response.data;
+          // Storing token in localStorage
+          localStorage.setItem('JWT', token);
+          onLogin()
+        } else if (response.status === 403){
+          // alert("Login failed, wrong user credentials");
+          setErrorMessage("Wrong Username or Password");
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        setErrorMessage("Wrong Username or Password");
+      });
+    }  
+  };
+
+  const ErrorMessage = ({ message }) => {
+    return (
+      <div className="text-red-500">
+        {message}
+      </div>
+    );
+  };
+  ErrorMessage.propTypes = {
+    message: PropTypes.string
   };
   
   
@@ -113,6 +143,7 @@ const LoginPage = ({ onLogin }) => {
                       <>
                       {/* status here */}
                       </>
+                      <ErrorMessage message={errorMessage} />
                       <TextInput
                           id={"input-username"}
                           type={"text"}
@@ -121,6 +152,7 @@ const LoginPage = ({ onLogin }) => {
                           label="Username:"
                           onChange={handleUsernameChange}
                       />
+                      <ErrorMessage message={errorMessage1} />
                       <TextInput
                       id={"input-password"}
                       icon={PWicon}

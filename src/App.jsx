@@ -21,12 +21,14 @@ const App = () => {
   return (
     <div className='
     max-w-screen
+    h-screen
     overflow-x-hidden'>
       {isLoggedIn ? (
         <DashBoardPage onLogout={handleLogout} />
       ) : (
         <LoginPage onLogin={handleLogin} />
       )}
+      {/* <DashBoardPage onLogout={handleLogout} /> */}
     </div>
   );
 };
