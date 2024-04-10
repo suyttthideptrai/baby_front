@@ -2,17 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const NavItem = ({ path, name, icon }) => {
+const NavItem = ({ path, name, icon, css }) => {
   return (
-    <li className="
-    flex 
-    items-center 
-    h-[40px]
-    p-[5px_5px_5px_5px]
-    hover:bg-[#525252]">
-      <Link to={path} className="flex items-center">
-        <img src={icon} alt={name} className="w-6 h-6 mr-2" />
-        <span className='text-white'>{name}</span>
+    <li className=
+    {"flex items-center h-[50px] p-[5px_5px_5px_5px] hover:bg-[#525252] hover:bg-opacity-50 duration-200 " + css}
+    >
+      <Link to={path} className="flex items-center w-full h-full p-2">
+        <img src={icon} alt={name} className="w-8 mr-2" />
+        <span className='text-white text-lg'>{name}</span>
       </Link>
     </li>
   );
@@ -22,6 +19,7 @@ NavItem.propTypes = {
   path: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired,
+  css: PropTypes.string
 };
 
 export default NavItem;

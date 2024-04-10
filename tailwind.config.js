@@ -7,12 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#FF0000',
-        secondary: '#00FF00',
+        primary: '#4285F4',
+        secondary: 'rgba(66, 133, 244, 0.3)',
+        hover1: 'rgba(82, 82, 82, 0.3)',
+        hover2: '#EAECF0',
       },
       fontFamily: {
         sans: ['Roboto', 'Alata'],
         poppins: ['Poppins', 'sans-serif'],
+        alata: ['Alata', 'sans-serif']
       },
     },
   },

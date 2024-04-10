@@ -1,5 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, setAuthenticated} from '../../redux/auth';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import TextInput from '../../components/TextInput';
@@ -8,12 +10,17 @@ import Logo from '../../assets/symbols/logo.svg'
 import UNicon from './../../assets/icons/vector2_x2.svg';
 import PWicon from './../../assets/icons/vector_x2.svg';
 import BicycleSym from './../../assets/symbols/bicycle.svg';
+import WaitingSymbol from '../../assets/symbols/tube-spinner.svg'
 
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [errorMessage1, setErrorMessage1] = useState('');
+  const [icon, setIcon] = useState(true);
+  const dispatch = useDispatch();
+  // const loading = useSelector((state) => state.authentication.loading);
+  // const error = useSelector((state) => state.authentication.error);
 
   const handleUsernameChange = () => {
     const username = document.getElementById("input-username").value;
@@ -44,6 +51,7 @@ const LoginPage = ({ onLogin }) => {
     }else if(password.length < 6){
       setErrorMessage('Invalid password');
     }else{
+        setIcon(false);
         axios.post("http://localhost:9999/api/v1/auth/authenticate", {
         username: username,
         password: password
@@ -52,18 +60,20 @@ const LoginPage = ({ onLogin }) => {
         if (response.status === 200) {
           console.log(response.data);
           setPassword('');
+          dispatch(setAuthenticated(true));
           const token = response.data;
-          // Storing token in localStorage
           localStorage.setItem('JWT', token);
           onLogin()
         } else if (response.status === 403){
           // alert("Login failed, wrong user credentials");
           setErrorMessage("Wrong Username or Password");
+          setIcon(true);
         }
       })
       .catch(error => {
         console.error(error);
-        setErrorMessage("Wrong Username or Password");
+        setErrorMessage("Error contacting server.");
+        setIcon(true);
       });
     }  
   };
@@ -83,10 +93,9 @@ const LoginPage = ({ onLogin }) => {
 
   return (
     <div className=" bg-[#4285F4]
-    flex
-    flex-row
+    lg:flex 
     w-full
-    h-full
+    min-h-screen
     overflow-hidden
     ">
         <div className="
@@ -96,7 +105,9 @@ const LoginPage = ({ onLogin }) => {
                     flex-col
                     items-center
                     p-[20px_46px_95px_46px]
-                    w-1/2
+                    w-full
+                    md:w-1/2
+                    h-screen
                     ">
             <img src={Logo} className='
       self-start
@@ -109,7 +120,6 @@ const LoginPage = ({ onLogin }) => {
               text-center
               '>
               <span className="
-              
               font-['Gilroy-Heavy','Roboto_Condensed']
               font-extrabold
               text-[76px]
@@ -164,6 +174,7 @@ const LoginPage = ({ onLogin }) => {
                       <ButtonLarge onClick={handleSubmit}>
                           Login Now  
                       </ButtonLarge> 
+                      <img className='w-[30px] absolute' src={WaitingSymbol} hidden={icon} />
                       <a href='#' className="m-[0_38px_0_0] 
                                             break-words 
                                             font-normal 
@@ -177,18 +188,17 @@ const LoginPage = ({ onLogin }) => {
               </div>
             </div>
         </div>
-        <div className="rounded-[46px] 
+        <div className="
             bg-[#4285F4] 
             relative 
-            flex
             justify-center 
             p-[305.3px_3.6px_226.7px_0]
-            w-[683px] 
-            h-[fit-content] 
-            box-sizing-border">
+            w-1/2
+            h-full 
+            ">
             <div className=" rounded-[46px] 
             bg-[rgba(255,255,255,0.21)] 
-            absolute left-[50%] top-[130px] 
+            absolute left-[50%] top-[20%] 
             translate-x-[-50%] 
             w-[352px] h-[321px] 
             items-center">
@@ -206,11 +216,11 @@ const LoginPage = ({ onLogin }) => {
                 </span>
             </div>
             <div className='absolute
-                right-[-140px]
+                right-[-20px]
                 w-[502px]
                 h-[307px]'>
-            <img className='' src={BicycleSym} alt="" />
-        </div>
+              <img className='' src={BicycleSym} alt="" />
+            </div>
         </div>
     </div>
   );

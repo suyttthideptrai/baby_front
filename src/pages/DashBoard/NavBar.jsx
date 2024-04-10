@@ -1,6 +1,8 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from "react-redux";
+import Logout from "../Login/Logout";
 import NavItem from "./NavItem";
 import MatIcon from "../../assets/icons/sidebar/materialIcon_x2.svg"
 import OrderReqIcon from "../../assets/icons/sidebar/orderIcon_x2.svg"
@@ -11,8 +13,13 @@ import UsersIcon from "../../assets/icons/sidebar/vector_x2 (2).svg"
 import LogoutIcon from "../../assets/icons/sidebar/logout.svg"
 import AboutIcon from "../../assets/icons/sidebar/financialPlanning_x2.svg"
 
+
+
 export default function Navbar() {
     const location = useLocation();
+    const dispatch = useDispatch();
+    const blurredState = useSelector(state => state.dashboard.blurBackGround);
+    const blurredCss = useSelector(state => state.dashboard.blurredStyle)
     const [path, setPath] = useState("");
     const navigate = useNavigate();
 
@@ -29,16 +36,26 @@ export default function Navbar() {
         setPath(location.pathname)
     }, [location])
     return (
-        <div>
-            <div className="flex flex-col space-y-10">
-                <ul className="flex flex-col">
+        <div className={"bg-[#4285F4] h-screen " + (blurredState ? blurredCss : "")}>
+            <div className='text-center self-start'>
+                <span className="
+                    font-alata
+                    font-extrabold
+                    text-[48px]
+                    capitalize
+                    text-[#fff]" style={{textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'}}>
+                        BabySmile
+                </span>
+            </div>
+            <div className="flex flex-col space-y-10 font-alata text-[16px]">
+                <ul className="flex flex-col space-y-3">
                 {navItems.map((item, index) => (
                     <NavItem key={index} path={item.path} name={item.name} icon={item.icon} />
                 ))}
                 </ul>
-                <ul className="flex flex-col">
-                    <NavItem className='bg-[#525252]' path="/about" name="About" icon={PurchOrder} />
-                    <NavItem path="#" name="Log Out" icon={LogoutIcon}/>
+                <ul className="flex flex-col space-y-3">
+                    <NavItem path="/about" name="About" icon={PurchOrder} css={"bg-[#525252] bg-opacity-50 hover:bg-opacity-100"} />
+                    <NavItem path="/logout" name="Log Out" icon={LogoutIcon}/>
                 </ul>
             </div>
 
