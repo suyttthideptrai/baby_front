@@ -205,7 +205,7 @@ const VendorDetails = () => {
         }
         {
           editable &&
-          <HeaderButton icon={DIcon} />
+          <HeaderButton icon={DIcon} title='Delete' />
         }
       </Header>
 
