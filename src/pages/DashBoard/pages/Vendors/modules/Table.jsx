@@ -1,21 +1,19 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
-import fetchAllVendors, {
+import {
     addVendorId
     , removeVendorId
-    , clearVendorIds
     , setVendorDetailsContent
-    , toggleHideShowDetailsPopup
-} from '../../../../../redux/material/VendorSlice';
-import { fetchTypes } from '../../../../../redux/material/MaterialSlice';
+} from '../../../../../redux/vendor/VendorSlice';
 
 import Status from './Status';
 
 const Table = ({initialData}) => {
 
   const dispatch = useDispatch();
+  const IDS = useSelector((state) => state.vendors.selectedVendorIds);
   const handleSelectAll = (event) => {
     const isChecked = event.target.checked;
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -25,7 +23,9 @@ const Table = ({initialData}) => {
 
     if (isChecked) {
       initialData.forEach((item) => {
-        dispatch(addVendorId(item.vendor_id));
+        if(!IDS.includes(item.vendor_id)){
+          dispatch(addVendorId(item.vendor_id));
+        }
       });
     } else {
       initialData.forEach((item) => {
@@ -68,21 +68,21 @@ Table.propTypes = {
 
 const Row = ({ data }) => {
 
-    const materialTypes = useSelector(state => state.materials.types);
+    // const materialTypes = useSelector(state => state.materials.types);
     const selectedIds = useSelector(state => state.vendors.selectedVendorIds);
     const navigator = useNavigate();
     const dispatch = useDispatch();
   
     //material types
-    const getMaterialGroupName = (groupId) => {
-      const materialGroup = materialTypes.find(group => group.type_id === groupId);
-      return materialGroup ? materialGroup.type_name.trim() : 'Unknown';
-    };
+    // const getMaterialGroupName = (groupId) => {
+    //   const materialGroup = materialTypes.find(group => group.type_id === groupId);
+    //   return materialGroup ? materialGroup.type_name.trim() : 'Unknown';
+    // };
   
     //selected Ids
     const handleChecked = (id) => {
       console.log('handling check with redux: ' + id)
-      if(selectedIds.includes(id)){
+      if(!selectedIds.includes(id)){
         dispatch(addVendorId(id))
       }else{
         dispatch(removeVendorId(id));

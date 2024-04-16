@@ -11,7 +11,7 @@ const Dropdown = ({ options, selectedOption, onChange, editable }) => {
   if (editable) {
     return (
       <select
-        className='border-2 bg-[#f4f5f7]'
+        className='border-2 bg-[#f4f5f7] w-[40%] h-10'
         value={selectedOption}
         onChange={handleSelectChange}
       >
@@ -24,7 +24,7 @@ const Dropdown = ({ options, selectedOption, onChange, editable }) => {
     );
   } else {
     return (
-      <div className='border-2 bg-[#f4f5f7] pr-8 pl-1 cursor-not-allowed'>
+      <div className='flex border-2 bg-[#f4f5f7] pr-8 pl-1 cursor-not-allowed h-10 items-center text-left w-[40%]'>
         {options.find((option) => option.type_id === selectedOption)?.type_name}
       </div>
     );

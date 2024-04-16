@@ -30,7 +30,6 @@ const App = () => {
       ) : (
         <LoginPage onLogin={handleLogin} />
       )}
-      {/* <DashBoardPage onLogout={handleLogout} /> */}
     </div>
   );
 };

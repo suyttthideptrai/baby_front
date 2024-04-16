@@ -11,6 +11,7 @@ import DIcon from '../../../../../assets/icons/crud/delete_icon.svg'
 import DataItem from '../../../../../components/DataItem'
 import Header from '../../../../../components/ModuleHeader'
 import MaterialForm from './MaterialForm'
+import MaterialDetails from '../../Materials/MaterialDetails'
 import SuppliedTable from './tables/SuppliedTable'
 import { HeaderButton } from '../../../../../components/ModuleHeader'
 import Dropdown from '../../../../../components/DropDown'
@@ -21,19 +22,26 @@ import {
   updateVendor,
   fetchVendorMaterials,
   fetchAllVendors
-} from '../../../../../redux/material/VendorSlice';
+} from '../../../../../redux/vendor/VendorSlice';
 import {
-  toggleHideShowCreate
+  fetchAllMaterials, fetchTypes
+  , toggleHideShowDetails
+  , removeMaterialDetailsContent
+  , toggleHideShowUpdate
+  , toggleHideShowCreate
 } from '../../../../../redux/material/MaterialSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 const VendorDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [editable, setEditable] = useState(false);
   //const selectedVendorId = useSelector((state) => state.vendors.vendorDetailsId);
   const types = useSelector(state => state.materials.types);
   const showCreateMaterialState = useSelector(state => state.materials.showCreateMaterialForm);
+  const showMaterialDetailsState = useSelector(state => state.materials.showDetails);
+  const materialDetailsContent = useSelector(state => state.materials.materialDetailsContent);
   const thisVendorDetails = useSelector((state) => state.vendors.vendorDetailsContent);
   const thisVendorMaterials = useSelector((state) => state.vendors.selectedVendorMaterials);
   const [updatedData, setUpdatedData] = useState({
@@ -94,28 +102,57 @@ const VendorDetails = () => {
   } 
 
   const handleBackendUpdate = async () => {
-    await dispatch(updateVendor(updatedData));
-    dispatch(fetchAllVendors());
-    alert("Vendor updated successfully!")
-    dispatch(removeVendorDetailsContent());
-    navigate('/vendors');
+    try{
+      await dispatch(updateVendor(updatedData));
+      dispatch(fetchAllVendors());
+      alert("Vendor updated successfully!")
+      dispatch(removeVendorDetailsContent());
+      navigate('/vendors');
+    }catch(e){
+      alert("Something went wrong while updating vendor " + e.message);
+    }
   }
 
   const handleSuccessRequest = () => {
     dispatch(fetchVendorMaterials(thisVendorDetails.vendor_id));
   }
 
+  const toggleHideMaterialDetails = () => {
+    dispatch(toggleHideShowDetails());
+    dispatch(removeMaterialDetailsContent());
+  };
+
   return (
     <div className='w-full h-fit font-alata'>
       <Header title={
         <span>
-          <Link className='hover:underline' to={'/vendors'}>{"Vendor List"}</Link> / {thisVendorDetails.vendor_name}
+          <Link className='hover:underline' to={'/vendors'}>{"Vendor List"}</Link> / <span className='font-light'>{thisVendorDetails.vendor_name}</span>
         </span>
       }>
         <HeaderButton title='Edit' icon={UIcon} css={"bg-secondary"} onClick={() => toggleEditVendor()}/>
       </Header>
+      <div className={`transition-opacity duration-500 ${showMaterialDetailsState ? '' : 'opacity-0 pointer-events-none'}`}>
+          {showMaterialDetailsState && (
+            <MaterialDetails 
+            data={materialDetailsContent} 
+            exit={toggleHideMaterialDetails} 
+            />
+          )}
+      </div>
+      <div className={`transition-opacity duration-500 ${showCreateMaterialState ? '' : 'opacity-0 pointer-events-none'}`}>
+      {
+        (showCreateMaterialState && editable)
+        &&
+        <MaterialForm 
+        types={types} 
+        onClick={toggleShowCreate} 
+        onSuccess={handleSuccessRequest}
+        vendorId={thisVendorDetails.vendor_id}
+        />
+      }
+      </div>
       {/* form data */}
-      <div className='flex p-2 place-content-between'>
+      <div className='flex place-content-between bg-hover2 p-10 text-lg'>
         <div className='column flex-col space-y-2'>
           <DataItem 
           label="Vendor ID" 
@@ -201,28 +238,13 @@ const VendorDetails = () => {
       <Header title="Supplied Products">
         {
           editable &&
-          <HeaderButton icon={AIcon} onClick={toggleShowCreate} />
+          <HeaderButton icon={AIcon} title='Add' onClick={toggleShowCreate} />
         }
         {
           editable &&
           <HeaderButton icon={DIcon} title='Delete' />
         }
       </Header>
-
-
-      <div className={`transition-opacity duration-500 ${showCreateMaterialState ? '' : 'opacity-0 pointer-events-none'}`}>
-      {
-        showCreateMaterialState 
-        ?
-        <MaterialForm 
-        types={types} 
-        onClick={toggleShowCreate} 
-        onSuccess={handleSuccessRequest} />
-        :
-        <>
-        </>
-      }
-      </div>
       
       {/* {
         JSON.stringify(thisVendorMaterials)

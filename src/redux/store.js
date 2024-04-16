@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import MaterialSlice from './material/MaterialSlice'
-import VendorSlice from './material/VendorSlice';
+import VendorSlice from './vendor/VendorSlice';
 import selectedIdsReducer from './material/selectedIdsSlice';
 import dashboardSlice from './material/dashboardSlice';
 import AuthSlice from './auth';

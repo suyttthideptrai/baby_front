@@ -7,13 +7,13 @@ import {
   , toggleHideShowDetailsPopup
   , toggleHideShowUpdateVendorForm 
   , removeVendorDetailsContent
-  , setVendorDetailsContent
-} from '../../../../redux/material/VendorSlice';
+  , deleteVendors
+  , clearVendorIds
+} from '../../../../redux/vendor/VendorSlice';
 import { fetchTypes } from '../../../../redux/material/MaterialSlice';
 import DeleteConfirmation from '../../../../components/DeleteConfirmation/DeleteConfirmation';
 import Header from '../../../../components/ModuleHeader'
 import { HeaderButton } from '../../../../components/ModuleHeader';
-import VendorDetails from './modules/VendorDetails';
 import VendorForm from './modules/AddVendorForm'; 
 
 import DeleteIcon from '../../../../assets/icons/crud/delete_icon.svg'
@@ -22,22 +22,22 @@ import AddIcon from '../../../../assets/icons/crud/add_icon.svg'
 const VendorsPage
  = () => {
   const dispatch = useDispatch();
-  // const loaded = useSelector(state => state.vendors.vendorsDataLoaded);
-  const vendorDetailsContent = useSelector(state => state.vendors.vendorDetailsContent);
-  const showDetailsState = useSelector(state => state.vendors.showVendorDetailsPopup);
+  const vendorIds = useSelector(state => state.vendors.selectedVendorIds);
   const showCreateForm = useSelector(state => state.vendors.showCreateVendorForm);
-  const showUpdateForm = useSelector(state => state.vendors.showUpdateVendorForm);
   const initialData = useSelector(state => state.vendors.vendors);
   const allData = useSelector(state => state.vendors);
   const [showDeleteConfirmation, setDeleteConfirmation] = useState(false);
+  const error = useSelector(state => state.vendors.error);
+  const responseMessage = useSelector(state => state.vendors.message);
+  const isLoading = useSelector(state => state.vendors.isLoading);
 
+  async function fetchData() {
+    await dispatch(fetchAllVendors());
+    console.log(allData);
+    dispatch(fetchTypes());
+  }
 
   useEffect(() => {
-    async function fetchData() {
-      await dispatch(fetchAllVendors());
-      console.log(allData);
-      dispatch(fetchTypes());
-    }
    fetchData();
   }, []);
 
@@ -50,8 +50,8 @@ const VendorsPage
     dispatch(toggleHideShowCreateVendorForm(false));
   };
 
-  const handleSuccessAddingRequest = () => {
-    dispatch(fetchAllVendors());
+  const handleSuccessAddingRequest = async () => {
+    await dispatch(fetchAllVendors());
     toggleHideCreate();
   }
 
@@ -68,23 +68,26 @@ const VendorsPage
 
   //Delete & delete confirmation
   const toggleDeleteConfirmation = () => {
+    if(vendorIds.length == 0){
+      alert('Please, choose checkboxes whose you want to delete.')
+      return;
+    }
     setDeleteConfirmation(true);
   };
 
-  const handleDelete = () => {
-    try {
-      // delete logics
-      // dispatch(deleteMaterials(idsToDelete));
-      // dispatch(clearIds());
-      // window.alert('Deletion Successful!');
-      // handleSuccessRequest();
-    } catch (error) {
-      console.error('Error deleting vendors:', error);
-    }
+  const handleDelete = async () => {
+    return dispatch(deleteVendors(vendorIds));
   };
 
-  const confirmDelete = () => {
-    handleDelete();
+  const confirmDelete = async() => {
+    try{
+      await handleDelete();
+      fetchData();
+      alert("Vendors deletion successful!")
+    }catch(e){
+      alert("Error: " + e.message);
+    }
+    dispatch(clearVendorIds());
     setDeleteConfirmation(false);
   };
 
@@ -114,7 +117,7 @@ const VendorsPage
       <div className={`transition-opacity duration-500 ${showDeleteConfirmation ? '' : 'opacity-0 pointer-events-none'}`}>
           {showDeleteConfirmation && (
             <DeleteConfirmation 
-            text={"Are you sure you want to delete the selected vendors?"} 
+            text={"Are you sure to remove?"} 
             yes={confirmDelete} 
             no={cancelDelete} />
           )}

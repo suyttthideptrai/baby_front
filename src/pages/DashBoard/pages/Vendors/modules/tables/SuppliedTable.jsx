@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { addId, removeId } from '../../../../../../redux/material/selectedIdsSlice';
+import { addMaterialDetailsContent, toggleHideShowDetails } from "../../../../../../redux/material/MaterialSlice";
 
 const SuppliedTable = ({ initialData, editable }) => {
 
@@ -27,21 +28,21 @@ const SuppliedTable = ({ initialData, editable }) => {
   
 
   return (
-    <div className='w-full overflow-auto'>
+    <div className='w-full overflow-auto p-5'>
       <table className='table-auto w-full'>
         <thead className='tracking-wider'>
-          <tr>
-            <th className='w-5 h-5 text-center items-center place-content-center'>
+          <tr className='space-x-2'>
+            <th className='w-10 h-10 text-center items-center place-content-center bg-hover2'>
               {
                 editable &&
                 <input className='w-5 h-5' type="checkbox" onChange={handleSelectAll}/>
               }
             </th>
             {/* <th className='w-[10%]'>Material ID</th> */}
-            <th className='w-[20%]'>Material Name</th>
-            <th className='w-[20%]'>Unit of Measure</th>
-            <th className='w-[20%]'>Price (VND)</th>
-            <th className='w-auto'>Group Material</th>
+            <th className='w-[20%] bg-hover2'>Material Name</th>
+            <th className='w-[20%] bg-hover2'>Unit of Measure</th>
+            <th className='w-[20%] bg-hover2'>Price (VND)</th>
+            <th className='w-auto bg-hover2'>Group Material</th>
           </tr>
         </thead>
         <tbody id="checkbox-container">
@@ -80,13 +81,13 @@ const Row = ({ data, editable }) => {
           }
         
           //show details
-          // const handleClicked = () => {
-          //   dispatch(addMaterialDetailsContent(data));
-          //   dispatch(toggleHideShowDetails());
-          // }
+          const handleClicked = () => {
+            dispatch(addMaterialDetailsContent(data));
+            dispatch(toggleHideShowDetails());
+          }
         
         return (
-          <tr className="tracking-wide text-gray-600 hover:text-black hover:cursor-pointer border-y-2">
+          <tr className="tracking-wide text-gray-600 hover:text-primary hover:underline hover:cursor-pointer border-y-2">
           {/* {
                     editable &&
                     <td className="pl-3">
@@ -107,11 +108,11 @@ const Row = ({ data, editable }) => {
                 />
               }
           </td>
-          <td className="text-center">{data.material_name}</td>
-          <td className="text-center">{data.material_unit_of_measure}</td>
-          <td className="text-center">{data.material_price}</td>
+          <td className="text-center" onClick={handleClicked}>{data.material_name}</td>
+          <td className="text-center" onClick={handleClicked}>{data.material_unit_of_measure}</td>
+          <td className="text-center" onClick={handleClicked}>{data.material_price}</td>
           {/* <td className="text-center">{data.material_quantity == -1 ? "NOT EXIST" : data.material_quantity}</td> */}
-          <td className="text-center p-3">{getMaterialGroupName(data.material_type)}</td>
+          <td className="text-center p-3" onClick={handleClicked}>{getMaterialGroupName(data.material_type)}</td>
         </tr>
         )
 };

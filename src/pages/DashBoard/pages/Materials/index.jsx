@@ -13,7 +13,6 @@ import React, { useEffect, useState } from 'react'
 import DeleteConfirmation from '../../../../components/DeleteConfirmation/DeleteConfirmation';
 import StatusMessage from '../../../../components/StatusMessage';
 import Table from './Table/Table'
-import MaterialForm from '../Vendors/modules/MaterialForm';
 import MaterialDetails from './MaterialDetails';
 import UpdateForm from './UpdateForm';
 import Header from './Header';
@@ -27,7 +26,6 @@ const MaterialsPage
 
   const [message, setMessage] = useState("");
   const [showDeleteConfirmation, setDeleteConfirmation] = useState(false);
-  const showCreateMaterialState = useSelector(state => state.materials.showCreateMaterialForm);
   const showDetailsState = useSelector(state => state.materials.showDetails);
   const showUpdateMaterialState = useSelector(state => state.materials.showUpdateForm);
   
@@ -146,17 +144,6 @@ const MaterialsPage
             />
           )}
       </div>
-      {
-        showCreateMaterialState 
-        ?
-        <MaterialForm 
-        types={materials.types} 
-        onClick={toggleShowCreate} 
-        onSuccess={handleSuccessRequest} />
-        :
-        <>
-        </>
-      }
       {
         materials
         ?

@@ -16,19 +16,6 @@ export const fetchAllVendors = createAsyncThunk(
   } 
 )
 
-// export const fetchVendorDetails = createAsyncThunk(
-//   "fetchAllVendors", async (id) => {
-//     const respond = await fetch(`${API_PREFIX}/query/id/${id}`,
-//     {
-//       method: 'GET',
-//       headers: { 
-//         'Content-Type': 'application/json'
-//       }
-//     })
-//     return respond.json();
-//   } 
-// )
-
 export const fetchVendorMaterials = createAsyncThunk(
   "fetchVendorMaterials", async (vendor_id) => {
     const respond = await fetch(`${API_PREFIX}/material/${vendor_id}`,

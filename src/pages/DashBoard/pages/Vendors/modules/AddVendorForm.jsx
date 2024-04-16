@@ -38,7 +38,6 @@ const VendorForm = ({ onSuccess, click }) => {
       await axios.post('http://localhost:9999/api/crud/vendor/add', vendorData);
       alert('Vendor successfully added to the system.');
       setVendorData({
-        vendor_id: '',
         vendor_name: '',
         vendor_phone: '',
         vendor_email: '',
@@ -54,24 +53,16 @@ const VendorForm = ({ onSuccess, click }) => {
   };
 
   return (
-    <div className='p-1 w-[72%] h-auto bg-primary fixed'>
+    <div className='p-1 w-[72%] h-auto bg-primary fixed ml-5'>
       <div className='bg-[#4285F4] flex place-content-between'>
-        <h2 className='font-bold text-lg p-3 text-center text-white'>Add New Vendor</h2>
+        <h2 className='font-bold text-lg p-1 text-center text-white'>Add New Vendor</h2>
         <img className='w-6 mr-5 cursor-pointer' onClick={handleClick} src={xIcon} alt="" />
       </div>
       {/* {JSON.stringify(vendorData)} */}
       <div className='bg-white'>
       <form onSubmit={handleSubmit}>
-        <div className='flex space-x-8'>
-            <div>
-                <FormInput
-                id="vendor_id"
-                label="Vendor ID"
-                name="vendor_id"
-                value={vendorData.vendor_id}
-                onChange={handleChange}
-                required
-                />
+        <div className='flex place-content-around'>
+            <div className='w-[40%]'>
                 <FormInput
                 id="vendor_name"
                 label="Vendor Name"
@@ -88,9 +79,10 @@ const VendorForm = ({ onSuccess, click }) => {
                 onChange={handleChange}
                 required
                 />
+                <SubmitButton title={"Create"} />
             </div>
 
-            <div>
+            <div className='w-[40%]'>
                 {/* Unit of Measure */}
                 <FormInput
                 id="vendor_email"
@@ -125,7 +117,6 @@ const VendorForm = ({ onSuccess, click }) => {
                 />
             </div>
         </div>
-        <SubmitButton title={"Create"} />
       </form>
       </div>
     </div>
@@ -138,7 +129,19 @@ export const SubmitButton = ({title, func}) => {
     }
     return (
         <div className='p-5'>
-            <button onClick={handleSubmit} className='w-auto border p-2 rounded-lg bg-[#4285F4] text-white font-bold' type="submit">{title}</button>
+            <button onClick={handleSubmit} className='
+            w-auto 
+            border 
+            mt-5
+            p-2 
+            rounded-lg 
+            bg-primary 
+            text-white 
+            font-bold
+            hover:bg-hover1
+            hover:text-primary
+            duration-200
+            ' type="submit">{title}</button>
         </div>
     )
 }

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 const FormInput = ({ id, label, name, value, onChange, required, type }) => {
   return (
-    <div className='flex mt-2 ml-5'>
-      <label className='font-bold w-[25%]' htmlFor={id}>{label}{required ? " (*)" : "" }</label>
-      <input className={'border-2 bg-[#f4f5f7]'}
+    <div className='flex mt-2 ml-5 place-content-between'>
+      <label className='font-bold w-[40%]' htmlFor={id}>{label}{required ? " (*)" : "" } :</label>
+      <input className={'border-2 bg-[#f4f5f7] w-[40%] h-10'}
         type={type}
         id={id}
         name={name}

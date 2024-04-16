@@ -41,7 +41,7 @@ function DashBoardPage() {
                 </div> 
               )}
             </div>
-            <div className='flex-grow items-start p-5 ml-5'>
+            <div className='flex-grow items-start'>
               <Routes>
                 {/* <Route path="/" element={<App />} /> */}
                 <Route path="/login" element={<LoginPage />} />

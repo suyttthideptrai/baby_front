@@ -11,7 +11,7 @@ const DataItem = ({ name, onChange, label, value, type, currency, bold, editable
 
             </div>
             <input
-                className={"w-1/2 p-1 " + (editable ? " border-2 " : " outline-none cursor-not-allowed bg-[#ddddd]")}
+                className={"w-1/2 p-1 bg-hover2 " + (editable ? " borber-b-2 " : " outline-none cursor-not-allowed")}
                 onChange={onChange}
                 name={name}
                 type={type}

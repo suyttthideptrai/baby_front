@@ -10,7 +10,7 @@ const Status = ({status}) => {
                               case 'INACTIVE':
                                         return 'text-red-500'
                               case 'INORDER':
-                                        return 'text-yellow-500'
+                                        return 'text-[#2374DB]'
                               default:
                                         return 'text-black'
                             }
