@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { addId, removeId } from "../../../../../redux/material/selectedIdsSlice";
 import { addMaterialDetailsContent, toggleHideShowDetails } from "../../../../../redux/material/MaterialSlice";
+import { formatMaterialQuantity } from "../../../../../utils/utils";
 
 
 
@@ -47,7 +48,7 @@ return (
       <td onClick={handleClicked} className="text-left text-black">{data.material_id}</td>
       <td onClick={handleClicked} className="text-left">{data.material_name}</td>
       <td className="text-left">{data.material_unit_of_measure}</td>
-      <td className="text-left">{data.material_quantity == -1 ? "NOT EXIST" : data.material_quantity}</td>
+      <td className="text-left">{formatMaterialQuantity(data.material_quantity)}</td>
       <td className="p-3 text-center">{getMaterialGroupName(data.material_type)}</td>
     </tr>
   );

@@ -72,6 +72,7 @@ const MaterialForm = ({ vendorId, types, onSuccess, onClick }) => {
                 label="Price"
                 name="material_price"
                 value={materialData.material_price}
+                type={"number"}
                 onChange={handleChange}
                 required
                 />

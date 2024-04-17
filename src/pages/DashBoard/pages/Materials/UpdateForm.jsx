@@ -6,6 +6,7 @@ import Dropdown from '../../../../components/DropDown';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateMaterial, fetchAllMaterials, toggleHideShowUpdate } from '../../../../redux/material/MaterialSlice';
 import { removeSelectedMaterial } from '../../../../redux/material/selectedIdsSlice';
+import { formatMaterialQuantity } from '../../../../utils/utils';
 
 const UpdateForm = ({ exit }) => {
     const dispatch = useDispatch();
@@ -19,6 +20,8 @@ const UpdateForm = ({ exit }) => {
         material_name: '',
         material_type: '',
         material_unit_of_measure: '',
+        material_quantity: '',
+        material_price: '',
         material_warehouse_date: '',
     });
 
@@ -101,7 +104,7 @@ const UpdateForm = ({ exit }) => {
     };
 
     return (
-        <div className='bg-primary p-1 w-2/3 fixed'>
+        <div className='bg-primary p-1 w-2/3 fixed ml-10'>
             <div className=' flex place-content-between'>
                 <span className='text-white'>Edit a material</span>
                 <img className='h-8 cursor-pointer' onClick={handleExit} src={XIcon} alt="" />
@@ -154,7 +157,7 @@ const UpdateForm = ({ exit }) => {
                         </div>
                         <DataItem
                             label="Vendor "
-                            value={"Sample Vendor"}
+                            value={selectedMaterial.material_vendor_name}
                             name="material_vendor"
                             onChange={handleChangeQueryValue}
                             type="text"
@@ -173,19 +176,19 @@ const UpdateForm = ({ exit }) => {
                         />
                         <DataItem
                             label="Quantity "
-                            value={"10"}
+                            value={formatMaterialQuantity(selectedMaterial.material_quantity)}
                             name="material_quantity"
                             onChange={handleChangeQueryValue}
                             type="text"
-                            editable={true}
+                            editable={false}
                         />
                         <DataItem
                             label="Price (VND) "
-                            value={"60.000"}
-                            name="material_name"
+                            value={selectedMaterial.material_price}
+                            name="material_price"
                             onChange={handleChangeQueryValue}
-                            type="text"
-                            editable={true}
+                            type="number"
+                            editable={false}
                         />
                         <DataItem
                             label="Warehouse Date "

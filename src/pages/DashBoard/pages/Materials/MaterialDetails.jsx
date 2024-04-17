@@ -3,6 +3,7 @@ import propTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import XIcon from '../../../../assets/icons/crud/x_icon.svg'
 import DataItem from '../../../../components/DataItem'
+import { formatCurrency, formatMaterialQuantity } from '../../../../utils/utils'
 
 const MaterialDetails = ({ data, exit }) => {
   let warehouseDate = null;
@@ -70,7 +71,7 @@ const MaterialDetails = ({ data, exit }) => {
           /> 
         <DataItem 
           label="Vendor" 
-          value="SAMPLE Company"
+          value={data.material_vendor_name}
           type="text"
           editable={false}
           /> 
@@ -79,8 +80,8 @@ const MaterialDetails = ({ data, exit }) => {
         <div className='column space-y-6'>
           <DataItem 
           label="Quantity" 
-          value={data.material_quantity}
-          type="number"
+          value={formatMaterialQuantity(data.material_quantity)}
+          type="text"
           editable={false}
           /> 
           <div>
@@ -88,8 +89,8 @@ const MaterialDetails = ({ data, exit }) => {
           </div>
           <DataItem 
           label="Price(VND)" 
-          value="60.000"
-          type="number"
+          value={formatCurrency(data.material_price)}
+          type="text"
           currency="VND"
           editable={false}
           /> 

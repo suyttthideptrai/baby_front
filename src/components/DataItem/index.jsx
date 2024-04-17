@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const DataItem = ({ name, onChange, label, value, type, currency, bold, editable }) => {
+const DataItem = ({ name, onChange, label, value, type, currency, bold, editable, extraCss }) => {
     return (
-        <div className='flex place-content-between'>
+        <div className={"flex place-content-between " + (extraCss && extraCss)}>
             <label htmlFor={label} className={" " + (bold ? " font-bold marker:" : " ")}>
                 {label}:
             </label>
@@ -30,7 +30,8 @@ DataItem.propTypes = {
     type: PropTypes.string,
     currency: PropTypes.string,
     bold: PropTypes.bool,
-    editable: PropTypes.bool
+    editable: PropTypes.bool,
+    extraCss: PropTypes.string
 };
 
 export default DataItem;
