@@ -4,6 +4,7 @@ import VendorSlice from './vendor/VendorSlice';
 import selectedIdsReducer from './material/selectedIdsSlice';
 import dashboardSlice from './material/dashboardSlice';
 import AuthSlice from './auth';
+import modalSlices from './modalSlices';
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
     materials: MaterialSlice,
     selectedIds: selectedIdsReducer,
     vendors: VendorSlice,
-    dashboard: dashboardSlice
+    dashboard: dashboardSlice,
+    modal: modalSlices,
   },
 })
 

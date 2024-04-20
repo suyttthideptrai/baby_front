@@ -26,7 +26,7 @@ const MaterialDetails = ({ data, exit }) => {
   }
 
   return (
-    <div className='ml-10 p-1 w-[72%] h-auto bg-primary fixed'>
+    <div className='p-1 h-auto bg-primary font-alata'>
       <div className='flex h-8 text-white place-content-between'>
         <span>
           Material Details

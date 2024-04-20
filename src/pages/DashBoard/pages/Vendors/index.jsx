@@ -3,7 +3,6 @@ import Table from './modules/Table';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   fetchAllVendors
-  , toggleHideShowCreateVendorForm
   , toggleHideShowDetailsPopup
   , toggleHideShowUpdateVendorForm 
   , removeVendorDetailsContent
@@ -18,15 +17,19 @@ import VendorForm from './modules/AddVendorForm';
 
 import DeleteIcon from '../../../../assets/icons/crud/delete_icon.svg'
 import AddIcon from '../../../../assets/icons/crud/add_icon.svg'
+import { 
+  setShowModal, 
+  setModalContent,
+  setModalHeight,
+  setModalWidth
+ } from '../../../../redux/modalSlices';
 
 const VendorsPage
  = () => {
   const dispatch = useDispatch();
   const vendorIds = useSelector(state => state.vendors.selectedVendorIds);
-  const showCreateForm = useSelector(state => state.vendors.showCreateVendorForm);
   const initialData = useSelector(state => state.vendors.vendors);
   const allData = useSelector(state => state.vendors);
-  const [showDeleteConfirmation, setDeleteConfirmation] = useState(false);
   const error = useSelector(state => state.vendors.error);
   const responseMessage = useSelector(state => state.vendors.message);
   const isLoading = useSelector(state => state.vendors.isLoading);
@@ -43,16 +46,20 @@ const VendorsPage
 
   //Create new vendor
   const toggleShowCreate = () => {
-    dispatch(toggleHideShowCreateVendorForm(true));
+    dispatch(setModalWidth('w-[55%]'));
+    dispatch(
+      setModalContent(
+        <VendorForm 
+        onSuccess={handleSuccessAddingRequest} 
+        />
+      )
+    )
+    dispatch(setShowModal(true));
   };
 
-  const toggleHideCreate = () => {
-    dispatch(toggleHideShowCreateVendorForm(false));
-  };
 
   const handleSuccessAddingRequest = async () => {
     await dispatch(fetchAllVendors());
-    toggleHideCreate();
   }
 
   //Show vendor Details
@@ -72,7 +79,17 @@ const VendorsPage
       alert('Please, choose checkboxes whose you want to delete.')
       return;
     }
-    setDeleteConfirmation(true);
+    dispatch(setModalWidth('w-[280px]'));
+    dispatch(setModalHeight('h-[150px]'));
+    dispatch(setModalContent(
+      <DeleteConfirmation 
+            text={"Are you sure to remove?"} 
+            yes={confirmDelete} 
+            no={cancelDelete} 
+      />
+    ))
+    dispatch(setShowModal(true));
+    //setDeleteConfirmation(true);
   };
 
   const handleDelete = async () => {
@@ -88,11 +105,15 @@ const VendorsPage
       alert("Error: " + e.message);
     }
     dispatch(clearVendorIds());
-    setDeleteConfirmation(false);
+    dispatch(setModalContent(null));
+    dispatch(setShowModal(false));
+    //setDeleteConfirmation(false);
   };
 
   const cancelDelete = () => {
-    setDeleteConfirmation(false);
+    dispatch(setModalContent(null));
+    dispatch(setShowModal(false));
+    //setDeleteConfirmation(false);
   };
 
   return (
@@ -113,25 +134,6 @@ const VendorsPage
         onClick={() => toggleShowCreate()}
         />
       </Header>
-      {/* Delete Confirmation */}
-      <div className={`transition-opacity duration-500 ${showDeleteConfirmation ? '' : 'opacity-0 pointer-events-none'}`}>
-          {showDeleteConfirmation && (
-            <DeleteConfirmation 
-            text={"Are you sure to remove?"} 
-            yes={confirmDelete} 
-            no={cancelDelete} />
-          )}
-      </div>
-
-      <div className={`transition-opacity duration-500 ${showCreateForm ? '' : 'opacity-0 pointer-events-none'}`}>
-        {
-          showCreateForm
-          ?
-          <VendorForm onSuccess={handleSuccessAddingRequest} click={toggleHideCreate} />
-          :
-          <></>
-        }
-      </div>
       {/* {
         showDetailsState
         ?

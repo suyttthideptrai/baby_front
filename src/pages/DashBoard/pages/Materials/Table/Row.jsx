@@ -2,8 +2,10 @@ import React from "react";
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { addId, removeId } from "../../../../../redux/material/selectedIdsSlice";
-import { addMaterialDetailsContent, toggleHideShowDetails } from "../../../../../redux/material/MaterialSlice";
+import { addMaterialDetailsContent, removeMaterialDetailsContent } from "../../../../../redux/material/MaterialSlice";
 import { formatMaterialQuantity } from "../../../../../utils/utils";
+import { setShowModal, setModalContent, setModalWidth } from "../../../../../redux/modalSlices";
+import MaterialDetails from "../MaterialDetails";
 
 
 
@@ -33,7 +35,20 @@ const Row = ({ data }) => {
   //show details
   const handleClicked = () => {
     dispatch(addMaterialDetailsContent(data));
-    dispatch(toggleHideShowDetails());
+    dispatch(setModalWidth('w-[72%]'));
+    dispatch(setModalContent(
+      <MaterialDetails 
+      data={data} 
+      exit={toggleHideMaterialDetails} 
+      />
+    ));
+    dispatch(setShowModal(true));
+  }
+
+  const toggleHideMaterialDetails = () => {
+    dispatch(removeMaterialDetailsContent());
+    dispatch(setShowModal(false));
+    dispatch(setModalContent(null));
   }
 
 return (

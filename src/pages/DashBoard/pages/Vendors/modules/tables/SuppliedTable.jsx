@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { addId, removeId } from '../../../../../../redux/material/selectedIdsSlice';
-import { addMaterialDetailsContent, toggleHideShowDetails } from "../../../../../../redux/material/MaterialSlice";
+//import { addMaterialDetailsContent, toggleHideShowDetails } from "../../../../../../redux/material/MaterialSlice";
 
 const SuppliedTable = ({ initialData, editable }) => {
 
@@ -81,13 +81,13 @@ const Row = ({ data, editable }) => {
           }
         
           //show details
-          const handleClicked = () => {
-            dispatch(addMaterialDetailsContent(data));
-            dispatch(toggleHideShowDetails());
-          }
+          // const handleClicked = () => {
+          //   dispatch(addMaterialDetailsContent(data));
+          //   dispatch(toggleHideShowDetails());
+          // }
         
         return (
-          <tr className="tracking-wide text-gray-600 hover:text-primary hover:underline hover:cursor-pointer border-y-2">
+          <tr className="tracking-wide text-gray-600 hover:text-black border-y-2">
           {/* {
                     editable &&
                     <td className="pl-3">
@@ -108,11 +108,11 @@ const Row = ({ data, editable }) => {
                 />
               }
           </td>
-          <td className="text-center" onClick={handleClicked}>{data.material_name}</td>
-          <td className="text-center" onClick={handleClicked}>{data.material_unit_of_measure}</td>
-          <td className="text-center" onClick={handleClicked}>{data.material_price}</td>
+          <td className="text-center">{data.material_name}</td>
+          <td className="text-center">{data.material_unit_of_measure}</td>
+          <td className="text-center">{data.material_price}</td>
           {/* <td className="text-center">{data.material_quantity == -1 ? "NOT EXIST" : data.material_quantity}</td> */}
-          <td className="text-center p-3" onClick={handleClicked}>{getMaterialGroupName(data.material_type)}</td>
+          <td className="text-center p-3">{getMaterialGroupName(data.material_type)}</td>
         </tr>
         )
 };

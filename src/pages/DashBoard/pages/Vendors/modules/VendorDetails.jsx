@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import propTypes from 'prop-types'
 
-import XIcon from '../../../../../assets/icons/crud/x_icon.svg'
 import UIcon from '../../../../../assets/icons/crud/edit_icon.svg'
 import AIcon from '../../../../../assets/icons/crud/add_icon.svg'
 import DIcon from '../../../../../assets/icons/crud/delete_icon.svg'
@@ -15,7 +14,6 @@ import MaterialDetails from '../../Materials/MaterialDetails'
 import SuppliedTable from './tables/SuppliedTable'
 import { HeaderButton } from '../../../../../components/ModuleHeader'
 import Dropdown from '../../../../../components/DropDown'
-import { SubmitButton } from './AddVendorForm'
 
 import { 
   removeVendorDetailsContent, 
@@ -27,10 +25,18 @@ import {
   fetchAllMaterials, fetchTypes
   , toggleHideShowDetails
   , removeMaterialDetailsContent
-  , toggleHideShowUpdate
-  , toggleHideShowCreate
 } from '../../../../../redux/material/MaterialSlice'
+import { 
+  deleteMaterials, 
+  clearIds
+} from '../../../../../redux/material/selectedIdsSlice'
+import { 
+  setShowModal, 
+  setModalContent, 
+  setModalWidth } from '../../../../../redux/modalSlices';
+
 import { useDispatch, useSelector } from 'react-redux'
+import DeleteConfirmation from '../../../../../components/DeleteConfirmation/DeleteConfirmation'
 
 const VendorDetails = () => {
   const dispatch = useDispatch();
@@ -39,11 +45,11 @@ const VendorDetails = () => {
   const [editable, setEditable] = useState(false);
   //const selectedVendorId = useSelector((state) => state.vendors.vendorDetailsId);
   const types = useSelector(state => state.materials.types);
-  const showCreateMaterialState = useSelector(state => state.materials.showCreateMaterialForm);
   const showMaterialDetailsState = useSelector(state => state.materials.showDetails);
   const materialDetailsContent = useSelector(state => state.materials.materialDetailsContent);
   const thisVendorDetails = useSelector((state) => state.vendors.vendorDetailsContent);
   const thisVendorMaterials = useSelector((state) => state.vendors.selectedVendorMaterials);
+  const selectedIds = useSelector((state) => state.selectedIds);
   const [updatedData, setUpdatedData] = useState({
     vendor_id: '',
     vendor_name: '',
@@ -70,8 +76,22 @@ const VendorDetails = () => {
   ]
 
   const toggleShowCreate = () => {
-    dispatch(toggleHideShowCreate());
+    dispatch(setModalContent(
+      <MaterialForm 
+        types={types} 
+        onClick={toggleHideCreate} 
+        onSuccess={handleSuccessRequest}
+        vendorId={thisVendorDetails.vendor_id}
+      />
+    ));
+    dispatch(setModalWidth('w-[60%]'));
+    dispatch(setShowModal(true));
   };
+
+  const toggleHideCreate = () => {
+    dispatch(setShowModal(false));
+    dispatch(setModalContent(null));
+  }
 
   const fetchMaterials = async () => {
     // dispatch(fetchVendorDetails(selectedVendorId))
@@ -97,7 +117,12 @@ const VendorDetails = () => {
     setUpdatedData({ ...updatedData, vendor_status: selectedValue });
   };
 
-  const toggleEditVendor = () => {
+  const toggleEditSaveChangesVendor = () => {
+    if(editable === true){
+      if(JSON.stringify(thisVendorDetails) !== JSON.stringify(updatedData)){
+      handleBackendUpdate();
+      }
+    }
     setEditable(!editable);
   } 
 
@@ -115,6 +140,8 @@ const VendorDetails = () => {
 
   const handleSuccessRequest = () => {
     dispatch(fetchVendorMaterials(thisVendorDetails.vendor_id));
+    dispatch(setShowModal(false));
+    dispatch(setModalContent(null));
   }
 
   const toggleHideMaterialDetails = () => {
@@ -122,14 +149,50 @@ const VendorDetails = () => {
     dispatch(removeMaterialDetailsContent());
   };
 
+  //delete materials
+
+  const confirmDelete = () => {
+    if(selectedIds.selected_ids.length === 0){
+      alert('Please, choose checkboxes whose you want to delete.')
+      return;
+    }
+    dispatch(setModalWidth('w-[280px]'));
+    dispatch(setModalContent(
+      <DeleteConfirmation
+        text={"Are you sure to remove these materials?"}
+        yes={() => handleDeleteMaterials()}
+        no={cancelDelete}
+      />
+    ));
+    dispatch(setShowModal(true));
+  };
+
+  const cancelDelete = () => {
+    dispatch(setShowModal(false));
+    dispatch(setModalContent(null));
+  };
+
+  const handleDeleteMaterials = async () => {
+    try {
+      dispatch(deleteMaterials(selectedIds));
+      dispatch(clearIds());
+      window.alert('Deletion Successful!');
+      handleSuccessRequest();
+    } catch (error) {
+      console.error('Error deleting materials:', error);
+    }
+    dispatch(setShowModal(false));
+    dispatch(setModalContent(null));
+  }
+
   return (
-    <div className='w-full h-fit font-alata'>
+    <div className='w-full h-fit font-alata transition-all duration-150'>
       <Header title={
         <span>
           <Link className='hover:underline' to={'/vendors'}>{"Vendor List"}</Link> / <span className='font-light'>{thisVendorDetails.vendor_name}</span>
         </span>
       }>
-        <HeaderButton title='Edit' icon={UIcon} css={"bg-secondary"} onClick={() => toggleEditVendor()}/>
+        <HeaderButton title={editable ? "Save Changes" : "Edit"} icon={UIcon} css={"bg-secondary"} onClick={() => toggleEditSaveChangesVendor()}/>
       </Header>
       <div className={`transition-opacity duration-500 ${showMaterialDetailsState ? '' : 'opacity-0 pointer-events-none'}`}>
           {showMaterialDetailsState && (
@@ -138,18 +201,6 @@ const VendorDetails = () => {
             exit={toggleHideMaterialDetails} 
             />
           )}
-      </div>
-      <div className={`transition-opacity duration-500 ${showCreateMaterialState ? '' : 'opacity-0 pointer-events-none'}`}>
-      {
-        (showCreateMaterialState && editable)
-        &&
-        <MaterialForm 
-        types={types} 
-        onClick={toggleShowCreate} 
-        onSuccess={handleSuccessRequest}
-        vendorId={thisVendorDetails.vendor_id}
-        />
-      }
       </div>
       {/* form data */}
       <div className='flex place-content-between bg-hover2 p-10 text-lg'>
@@ -230,10 +281,10 @@ const VendorDetails = () => {
         </div>
       </div>
       <div className='h-10 items-center place-content-center'>
-        {
+        {/* {
           editable &&
           <SubmitButton title={"Save Changes"} func={handleBackendUpdate} />
-        }
+        } */}
         </div>  
       <Header title="Supplied Products">
         {
@@ -242,7 +293,7 @@ const VendorDetails = () => {
         }
         {
           editable &&
-          <HeaderButton icon={DIcon} title='Delete' />
+          <HeaderButton icon={DIcon} title='Delete' onClick={confirmDelete} />
         }
       </Header>
       

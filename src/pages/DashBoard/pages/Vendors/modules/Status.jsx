@@ -6,9 +6,9 @@ const Status = ({status}) => {
           const getColor = (status) => {
                     switch (status) {
                               case 'ACTIVE':
-                                        return 'text-green-500'
+                                        return 'text-[#3DBC59]'
                               case 'INACTIVE':
-                                        return 'text-red-500'
+                                        return 'text-[#B13028]'
                               case 'INORDER':
                                         return 'text-[#2374DB]'
                               default:

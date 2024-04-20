@@ -3,8 +3,11 @@ import FormInput from '../../../../../components/FormInput';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import xIcon from '../../../../../assets/icons/crud/x_icon.svg';
+import { setShowModal, setModalContent } from '../../../../../redux/modalSlices';
+import { useDispatch } from 'react-redux';
 
 const VendorForm = ({ onSuccess, click }) => {
+  const dispatch = useDispatch();
   const [vendorData, setVendorData] = useState({
     vendor_id: '',
     vendor_name: '',
@@ -24,8 +27,8 @@ const VendorForm = ({ onSuccess, click }) => {
     setVendorData({ ...vendorData, [name]: value });
   };
   const handleClick = () => {
-    click();
-    console.log('click');
+    dispatch(setShowModal(false));
+    dispatch(setModalContent(null));
   };
 
   // const handleDropdownChange = (selectedValue) => {
@@ -46,6 +49,8 @@ const VendorForm = ({ onSuccess, click }) => {
         //vendor_status: 'ACTIVE',
       });
       //handle success adding
+      dispatch(setShowModal(false));
+      dispatch(setModalContent(null));
       onSuccess();
     } catch (error) {
       alert('Error adding vendor. Please try again.');
@@ -53,7 +58,7 @@ const VendorForm = ({ onSuccess, click }) => {
   };
 
   return (
-    <div className='p-1 w-[72%] h-auto bg-primary fixed ml-5'>
+    <div className='p-1 w-auto bg-primary'>
       <div className='bg-[#4285F4] flex place-content-between'>
         <h2 className='font-bold text-lg p-1 text-center text-white'>Add New Vendor</h2>
         <img className='w-6 mr-5 cursor-pointer' onClick={handleClick} src={xIcon} alt="" />

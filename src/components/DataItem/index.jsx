@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const DataItem = ({ name, onChange, label, value, type, currency, bold, editable, extraCss }) => {
     return (
-        <div className={"flex place-content-between " + (extraCss && extraCss)}>
+        <div className={"flex items-center place-content-between " + (extraCss && extraCss)}>
             <label htmlFor={label} className={" " + (bold ? " font-bold marker:" : " ")}>
                 {label}:
             </label>
@@ -11,12 +11,13 @@ const DataItem = ({ name, onChange, label, value, type, currency, bold, editable
 
             </div>
             <input
-                className={"w-1/2 p-1 bg-hover2 " + (editable ? " borber-b-2 " : " outline-none cursor-not-allowed")}
+                className={"w-auto p-1 overflow-visible bg-hover2 " + (editable ? " borber-b-2 " : " outline-none cursor-not-allowed")}
                 onChange={onChange}
                 name={name}
                 type={type}
                 value={value}
                 readOnly={!editable}
+                title={value}
             />
         </div>
     );

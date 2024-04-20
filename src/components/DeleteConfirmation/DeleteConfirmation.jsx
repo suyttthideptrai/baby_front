@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import QuestionMarkIcon from '../../assets/icons/settings/help_icon.svg'
+import { setShowModal, setModalContent } from '../../redux/modalSlices';
 
 
 const ConfirmationButton = ({ text, onClick }) => {
@@ -31,9 +32,6 @@ const DeleteConfirmation = ({ text, yes, no }) => {
       w-[280px] h-[220px] 
       items-center 
       text-center 
-      fixed inset-x-1/2 
-      inset-y-1/5
-      z-50 
       justify-center'
     >
       <div>

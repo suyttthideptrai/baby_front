@@ -4,9 +4,10 @@ import DataItem from '../../../../components/DataItem';
 import PropTypes from 'prop-types';
 import Dropdown from '../../../../components/DropDown';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateMaterial, fetchAllMaterials, toggleHideShowUpdate } from '../../../../redux/material/MaterialSlice';
+import { updateMaterial, fetchAllMaterials } from '../../../../redux/material/MaterialSlice';
 import { removeSelectedMaterial } from '../../../../redux/material/selectedIdsSlice';
 import { formatMaterialQuantity } from '../../../../utils/utils';
+import { setShowModal, setModalContent } from '../../../../redux/modalSlices';
 
 const UpdateForm = ({ exit }) => {
     const dispatch = useDispatch();
@@ -90,12 +91,13 @@ const UpdateForm = ({ exit }) => {
         e.preventDefault();
         dispatch(updateMaterial(selectedMaterial));
         alert("Update Success!");
-        dispatch(toggleHideShowUpdate());
         success();
     };
 
     const success = () => {
         dispatch(fetchAllMaterials());
+        dispatch(setShowModal(false));
+        dispatch(setModalContent(null));
     }
 
     const handleExit = () => {
@@ -104,7 +106,7 @@ const UpdateForm = ({ exit }) => {
     };
 
     return (
-        <div className='bg-primary p-1 w-2/3 fixed ml-10'>
+        <div className='bg-primary p-1 font-alata'>
             <div className=' flex place-content-between'>
                 <span className='text-white'>Edit a material</span>
                 <img className='h-8 cursor-pointer' onClick={handleExit} src={XIcon} alt="" />
