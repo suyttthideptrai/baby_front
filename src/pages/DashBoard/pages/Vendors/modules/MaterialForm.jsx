@@ -50,7 +50,7 @@ const MaterialForm = ({ vendorId, types, onSuccess, onClick }) => {
   };
 
   return (
-    <div className='bg-primary w-auto border-1'>
+    <div className='bg-primary w-auto border-1 font-alata'>
       <div className='flex place-content-between'>
         <h2 className='font-bold text-lg p-1 text-center text-white'>Create New Material</h2>
         <img className='w-6 mr-5 cursor-pointer' onClick={handleClick} src={xIcon} alt="" />
