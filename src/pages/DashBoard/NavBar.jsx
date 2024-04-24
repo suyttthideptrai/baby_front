@@ -17,44 +17,43 @@ import AboutIcon from "../../assets/icons/sidebar/financialPlanning_x2.svg"
 
 export default function Navbar() {
     const location = useLocation();
-    const dispatch = useDispatch();
-    const blurredState = useSelector(state => state.dashboard.blurBackGround);
-    const blurredCss = useSelector(state => state.dashboard.blurredStyle)
+    // const dispatch = useDispatch();
     const [path, setPath] = useState("");
     const navigate = useNavigate();
 
     const navItems = [
-        { path: '/materials', name: 'Material Management', icon: MatIcon },
-        { path: '/order-reqs', name: 'Order Requirement Management', icon: OrderReqIcon },
-        { path: '/purch-orders', name: 'Purchasing Order Management', icon: AboutIcon },
-        { path: '/inventory', name: 'Inventory Management', icon: UsersIcon },
-        { path: '/vendors', name: 'Vendor Management', icon: VendorsIcon },
-        { path: '/users', name: 'User Management', icon: InventoryIcon }
+        { path: '/materials', name: 'Materials', icon: MatIcon },
+        { path: '/vendors', name: 'Vendors', icon: VendorsIcon },
+        // { path: '/order-reqs', name: 'Order Requirement Management', icon: OrderReqIcon },
+        { path: '/purch-orders', name: 'Purchasing Orders', icon: AboutIcon },
+        { path: '/inventory', name: 'Goods Receipts', icon: UsersIcon },
+        // { path: '/users', name: 'User Management', icon: InventoryIcon }
       ];
 
     useEffect(( ) => {
         setPath(location.pathname)
     }, [location])
     return (
-        <div className={"bg-[#4285F4] h-screen " + (blurredState ? blurredCss : "")}>
+        <div className={"bg-[#4285F4] h-screen select-none"}>
             <div className='text-center self-start'>
                 <span className="
-                    font-alata
-                    font-extrabold
+                    font-popins
+                    font-extrabold 
+                    pl-5 pr-5 
                     text-[48px]
                     capitalize
                     text-[#fff]" style={{textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'}}>
                         BabySmile
                 </span>
             </div>
-            <div className="flex flex-col space-y-10 font-alata text-[16px]">
+            <div className="font-popins text-[16px] flex flex-col place-content-between h-[70%]">
                 <ul className="flex flex-col space-y-3">
                 {navItems.map((item, index) => (
                     <NavItem key={index} path={item.path} name={item.name} icon={item.icon} />
                 ))}
                 </ul>
                 <ul className="flex flex-col space-y-3">
-                    <NavItem path="/about" name="About" icon={PurchOrder} css={"bg-[#525252] bg-opacity-50 hover:bg-opacity-100"} />
+                    <NavItem path="/about" name="Settings" icon={PurchOrder} /*css={"bg-[#525252] bg-opacity-50 hover:bg-opacity-100"} */ />
                     <NavItem path="/logout" name="Log Out" icon={LogoutIcon}/>
                 </ul>
             </div>

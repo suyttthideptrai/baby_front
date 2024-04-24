@@ -11,7 +11,7 @@ export default function Modal({ open }) {
                     <div
                               className={`
                                         fixed inset-0 flex justify-center items-center transition-colors
-                                        ${open ? "visible bg-black/20" : "invisible"}
+                                        ${open ? "visible bg-black/30" : "invisible"}
                               `}
                     >
                               {/* modal */}
@@ -20,7 +20,7 @@ export default function Modal({ open }) {
                                         className={`
                                                   bg-white transition-all rounded-xl 
                                                   ${width ? width : "w-auto"} 
-                                                  ${height ? height : "h-auto"} mb-[40vh]
+                                                  ${height ? height : "h-auto"} 
                                                   ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}
                                         `}
                               >

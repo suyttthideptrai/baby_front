@@ -21,7 +21,7 @@ function ButtonLarge(props) {
     box-sizing-border
     cursor-pointer
     '>
-        <button onClick={onClick} className=" break-words
+        <button onDoubleClick={onClick} className=" break-words
           font-poppins
           font-bold
           text-[12px]

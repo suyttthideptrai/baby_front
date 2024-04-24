@@ -14,7 +14,6 @@ import UsersPage from "./pages/Users";
 import AboutPage from "./pages/About";
 import LoginPage from '../Login';
 import Logout from '../Login/Logout';
-import App from '../../App';
 
 function DashBoardPage() {
   const [settingsVisibility, setSettingsVisibility] = useState(false)
@@ -26,7 +25,7 @@ function DashBoardPage() {
   
   return (
     <BrowserRouter>
-        <div>
+        <div className='overflow-clip'>
           <div className='items-start'>
               <TopBar toggleFunc={toggleSettingsVisibility} />
           </div>
@@ -41,10 +40,10 @@ function DashBoardPage() {
                 </div> 
               )}
             </div>
-            <div className='flex-grow items-start'>
+            <div className='flex-grow items-start h-screen'>
               <Routes>
                 {/* <Route path="/" element={<App />} /> */}
-                <Route path="/login" element={<LoginPage />} />
+                {/* <Route path="/login" element={<LoginPage />} /> */}
                 <Route path="/materials" element={<MaterialsPage />} />
                 <Route path="/order-reqs" element={<OrderRequirementPage />} />
                 <Route path="/purch-orders" element={<PurchasingOrdersPage />} />

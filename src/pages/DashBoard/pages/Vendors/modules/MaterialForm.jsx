@@ -4,8 +4,10 @@ import Dropdown from '../../../../../components/DropDown';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import xIcon from '../../../../../assets/icons/crud/x_icon.svg';
+import { useSelector } from 'react-redux';
 
 const MaterialForm = ({ vendorId, types, onSuccess, onClick }) => {
+  const token = useSelector((state) => state.authentication.token);
   const [materialData, setMaterialData] = useState({
     material_name: '',
     material_price: 0,
@@ -30,10 +32,25 @@ const MaterialForm = ({ vendorId, types, onSuccess, onClick }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(token === null) {
+      alert('Something went wrong please login again');
+      return;
+    }
+    let response;
     try {
-      await axios.post('http://localhost:9999/api/crud/material/add', materialData);
-      alert('Material successfully added to the system.');
-      onSuccess();
+      response = await axios.post('http://localhost:9999/api/crud/material/add', materialData,
+      {
+        headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    }
+    );
+      if(response.status === 200) {
+        alert('Material successfully added to the system.');
+        onSuccess();
+      }else{
+        alert('Error adding material. Please relogin and try again! If error persists contact admin.')
+      }
 
       setMaterialData({
         material_name: '',

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import QuestionMarkIcon from '../../assets/icons/settings/help_icon.svg'
-import { setShowModal, setModalContent } from '../../redux/modalSlices';
+//import { setShowModal, setModalContent } from '../../redux/modalSlices';
 
 
 const ConfirmationButton = ({ text, onClick }) => {

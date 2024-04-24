@@ -1,13 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { getRequestHeaderWithBearerToken } from '../../utils/utils';
 
 export const fetchAllMaterials = createAsyncThunk(
-  "fetchAllMaterials", async () => {
+  "fetchAllMaterials", async (_, { getState }) => {
+    const token = getState().authentication.token;
     const respond = await fetch("http://localhost:9999/api/crud/material/all",
     {
       method: 'GET',
       headers: { 
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       }
     })
     return respond.json();
@@ -15,26 +18,63 @@ export const fetchAllMaterials = createAsyncThunk(
 )
 
 export const fetchTypes= createAsyncThunk(
-  "fetchTypes", async () => {
+  "fetchTypes", async (_, { getState }) => {
+    const token = getState().authentication.token;
     const respond = await fetch("http://localhost:9999/api/crud/material/type/all",
     {
       method: 'GET',
       headers: { 
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       }
     })
     return respond.json();
-  } 
+  }
 )
+
 
 export const updateMaterial = createAsyncThunk(
   'updateMaterial',
-  async (materialData, thunkAPI) => {
+  async (materialData, { getState, rejectWithValue }) => {
+    const token = getState().authentication.token;
     try {
-      const response = await axios.put('http://localhost:9999/api/crud/material/update', materialData);
+      const response = await axios.put(
+        'http://localhost:9999/api/crud/material/update', 
+        materialData,
+        getRequestHeaderWithBearerToken(token)
+      );
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return rejectWithValue({ status: error.response.status, message: "Update failed" });
+    }
+  }
+);
+
+export const addMaterial = createAsyncThunk(
+  'materials/add',
+  async (materialData, { getState, rejectWithValue }) => {
+    const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
+    try {
+      const response = await axios.post(
+        'http://localhost:9999/api/crud/material/add',
+        materialData,
+        {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        }
+      );
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return rejectWithValue('Error adding material. Please relogin and try again! If error persists contact admin.');
+      }
+    } catch (error) {
+      console.error('Error adding material:', error);
+      return rejectWithValue('Error adding material. Please try again.');
     }
   }
 );
@@ -45,6 +85,7 @@ export const MaterialSlice = createSlice({
   initialState: {
     materials: [],
     materialDetailsContent: [],
+    materialSubmitContent: [],
     showDetails: false,
     showUpdateForm: false,
     showCreateMaterialForm: false,
@@ -56,6 +97,9 @@ export const MaterialSlice = createSlice({
   reducers:{
     addMaterialDetailsContent: (state, action) => {
       state.materialDetailsContent = action.payload;
+    },
+    addMaterialSubmitContent: (state, action) => {
+      state.materialSubmitContent = action.payload;
     },
     removeMaterialDetailsContent: (state) => {
       state.materialDetailsContent = [];
@@ -117,6 +161,7 @@ export const MaterialSlice = createSlice({
 
 export const { 
   addMaterialDetailsContent, 
+  addMaterialSubmitContent,
   removeMaterialDetailsContent, 
   toggleHideShowDetails,
   toggleHideShowUpdate,

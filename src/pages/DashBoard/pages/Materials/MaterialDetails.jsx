@@ -26,33 +26,37 @@ const MaterialDetails = ({ data, exit }) => {
   }
 
   return (
-    <div className='p-1 h-auto bg-primary font-alata'>
+    <div className='p-1 h-auto bg-primary font-inter'>
       <div className='flex h-8 text-white place-content-between'>
         <span>
           Material Details
         </span>
-        <img className='h-6 cursor-pointer' onClick={handleExit} src={XIcon} alt="" />
+        <img className='h-6 cursor-pointer' onDoubleClick={handleExit} src={XIcon} alt="" />
       </div>
 
-      <div className='bg-white flex place-content-around space-x-2 p-5'>
+      <div className='bg-white flex place-content-around space-x-2 p-10'>
         <div className='column space-y-6'>
           <DataItem 
           label="Material ID" 
           value={data.material_id}
           type="text"
           editable={false}
+          viewOnly={true}
           /> 
           <DataItem 
           label="Material Name" 
           value={data.material_name}
           type="text"
           editable={false}
+          viewOnly={true}
           /> 
           <DataItem 
           label="Material Group" 
           value={getMaterialGroupName(data.material_type)}
           type="text"
           editable={false}
+          viewOnly={true}
+
           /> 
         </div>
 
@@ -62,18 +66,24 @@ const MaterialDetails = ({ data, exit }) => {
           value={data.material_unit_of_measure}
           type="text"
           editable={false}
+          viewOnly={true}
+
           /> 
         <DataItem 
           label="Warehouse Date" 
           value={formattedWarehouseDate}
           type="date"
           editable={false}
+          viewOnly={true}
+
           /> 
         <DataItem 
           label="Vendor" 
           value={data.material_vendor_name}
           type="text"
           editable={false}
+          viewOnly={true}
+
           /> 
         </div>
 
@@ -83,6 +93,8 @@ const MaterialDetails = ({ data, exit }) => {
           value={formatMaterialQuantity(data.material_quantity)}
           type="text"
           editable={false}
+          viewOnly={true}
+
           /> 
           <div>
 
@@ -93,6 +105,8 @@ const MaterialDetails = ({ data, exit }) => {
           type="text"
           currency="VND"
           editable={false}
+          viewOnly={true}
+
           /> 
         </div>
 

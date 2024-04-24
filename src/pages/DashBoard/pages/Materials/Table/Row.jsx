@@ -60,8 +60,8 @@ return (
           onChange={() => handleChecked(data.material_id)}
         />
       </td>
-      <td onClick={handleClicked} className="text-left text-black">{data.material_id}</td>
-      <td onClick={handleClicked} className="text-left">{data.material_name}</td>
+      <td onDoubleClick={handleClicked} className="text-left text-black">{data.material_id}</td>
+      <td onDoubleClick={handleClicked} className="text-left">{data.material_name}</td>
       <td className="text-left">{data.material_unit_of_measure}</td>
       <td className="text-left">{formatMaterialQuantity(data.material_quantity)}</td>
       <td className="p-3 text-center">{getMaterialGroupName(data.material_type)}</td>

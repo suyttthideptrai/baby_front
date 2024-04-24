@@ -25,3 +25,12 @@ export const getColor = (status) => {
                               return 'text-black'
                   }
           }
+
+export const getRequestHeaderWithBearerToken = (token) => {
+        let result = {
+                headers: {
+                        'Authorization' : 'Bearer ' + token
+                }
+        }
+        return result;
+}

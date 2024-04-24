@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 const TopBar = ({gearFunc, bellFunc, globeFunc, profileFunc, toggleFunc, notifications}) => {
   return (
-    <div className='font-alata flex h-auto p-2 bg-[#4285F4] w-screen items-center place-content-between'>
+    <div className='font-alata flex h-[8%] p-1 bg-[#4285F4] w-screen items-center place-content-between'>
         <div className='justify-self-start self-end'>
             <div className='ml-2 '>
                 <img className='w-24' src={WhiteLogo} alt="" />

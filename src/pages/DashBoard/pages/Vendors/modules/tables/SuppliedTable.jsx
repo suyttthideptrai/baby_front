@@ -1,12 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { addId, removeId } from '../../../../../../redux/material/selectedIdsSlice';
+import RowInput from './RowInput';
+import Dropdown from '../../../../../../components/DropDown';
+import { addMaterialSubmitContent } from '../../../../../../redux/material/MaterialSlice';
 //import { addMaterialDetailsContent, toggleHideShowDetails } from "../../../../../../redux/material/MaterialSlice";
 
-const SuppliedTable = ({ initialData, editable }) => {
-
+const SuppliedTable = ({ initialData, editable, showAdding, vendorId }) => {
   const dispatch = useDispatch();
+  const materialTypes = useSelector(state => state.materials.types);
+  const [materialData, setMaterialData] = useState({
+    material_name: '',
+    material_price: 0,
+    material_unit_of_measure: '',
+    //material_warehouse_date: '',
+    material_type_id: 1,
+    material_vendor_id: vendorId
+  });
+
+
+  useEffect(() => {
+    dispatch(addMaterialSubmitContent(materialData));
+  }, [materialData])
+  
+  
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setMaterialData({ ...materialData, [name]: value });
+    //handleChangeRedux();
+    
+  };
 
   const handleSelectAll = (event) => {
     const isChecked = event.target.checked;
@@ -25,12 +50,19 @@ const SuppliedTable = ({ initialData, editable }) => {
       });
     }
   };
+
+
+  const handleDropdownChange = (selectedValue) => {
+    setMaterialData({ ...materialData, material_type_id: selectedValue });
+  };
+
+  
   
 
   return (
-    <div className='w-full overflow-auto p-5'>
+    <div className='w-full h-[50%] p-5 overflow-y-scroll'>
       <table className='table-auto w-full'>
-        <thead className='tracking-wider'>
+        <thead className='tracking-wider select-none'>
           <tr className='space-x-2'>
             <th className='w-10 h-10 text-center items-center place-content-center bg-hover2'>
               {
@@ -46,13 +78,47 @@ const SuppliedTable = ({ initialData, editable }) => {
           </tr>
         </thead>
         <tbody id="checkbox-container">
-          {initialData.map(item => (
+          {initialData && initialData.map(item => (
             <Row
               key={item.material_id}
               data={item}
               editable={editable}
             />
           ))}
+          {
+            showAdding &&
+            <tr className="tracking-wide text-gray-600 hover:text-black border-y-2">
+              <td className="w-5 h-5">
+
+              </td>
+              <RowInput 
+              name={"material_name"}  
+              type={"text"}
+              initialValue={"text"}
+              onChanged={handleChange}
+              />
+              <RowInput 
+              name={"material_unit_of_measure"}  
+              type={"text"}
+              initialValue={"text"}
+              onChanged={handleChange}
+              />
+              <RowInput 
+              name={"material_price"}  
+              type={"number"}
+              initialValue={"text"}
+              onChanged={handleChange}
+              />
+              <div className='flex items-center place-content-center'>
+                <Dropdown 
+                options={materialTypes}  
+                selectedOption={materialData.material_type_id}
+                editable={true}
+                onChange={handleDropdownChange}
+                />
+              </div>
+          </tr>
+          }
         </tbody>
       </table>
     </div>
@@ -80,24 +146,8 @@ const Row = ({ data, editable }) => {
             }
           }
         
-          //show details
-          // const handleClicked = () => {
-          //   dispatch(addMaterialDetailsContent(data));
-          //   dispatch(toggleHideShowDetails());
-          // }
-        
         return (
           <tr className="tracking-wide text-gray-600 hover:text-black border-y-2">
-          {/* {
-                    editable &&
-                    <td className="pl-3">
-                              <input className='w-5 h-5'
-                              type="checkbox"
-                              name="product-id"
-                              onChange={() => handleChecked(data.material_id)}
-                              />
-                    </td>
-          } */}
           <td className="w-5 h-5 text-center items-center place-content-center">
               {
                 editable &&
@@ -132,7 +182,9 @@ editable: PropTypes.bool
 
 SuppliedTable.propTypes = {
   initialData: PropTypes.array.isRequired,
-  editable: PropTypes.bool
+  editable: PropTypes.bool,
+  showAdding: PropTypes.bool,
+  vendorId: PropTypes.string,
 };
 
 export default SuppliedTable;

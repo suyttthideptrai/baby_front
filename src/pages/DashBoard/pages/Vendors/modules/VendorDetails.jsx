@@ -9,7 +9,7 @@ import DIcon from '../../../../../assets/icons/crud/delete_icon.svg'
 
 import DataItem from '../../../../../components/DataItem'
 import Header from '../../../../../components/ModuleHeader'
-import MaterialForm from './MaterialForm'
+//import MaterialForm from './MaterialForm'
 import MaterialDetails from '../../Materials/MaterialDetails'
 import SuppliedTable from './tables/SuppliedTable'
 import { HeaderButton } from '../../../../../components/ModuleHeader'
@@ -24,8 +24,10 @@ import {
 import {
   fetchAllMaterials, fetchTypes
   , toggleHideShowDetails
-  , removeMaterialDetailsContent
+  , removeMaterialDetailsContent,
+  addMaterialSubmitContent
 } from '../../../../../redux/material/MaterialSlice'
+import { addMaterial } from '../../../../../redux/material/MaterialSlice'
 import { 
   deleteMaterials, 
   clearIds
@@ -42,9 +44,11 @@ const VendorDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //const token = useSelector((state) => state.authentication.token);
   const [editable, setEditable] = useState(false);
-  //const selectedVendorId = useSelector((state) => state.vendors.vendorDetailsId);
-  const types = useSelector(state => state.materials.types);
+  const [showAdding, setShowAdding] = useState(false);
+  const addMaterialContent = useSelector(state => state.materials.materialSubmitContent);
+  //const types = useSelector(state => state.materials.types);
   const showMaterialDetailsState = useSelector(state => state.materials.showDetails);
   const materialDetailsContent = useSelector(state => state.materials.materialDetailsContent);
   const thisVendorDetails = useSelector((state) => state.vendors.vendorDetailsContent);
@@ -75,6 +79,7 @@ const VendorDetails = () => {
     }
   ]
 
+/*
   const toggleShowCreate = () => {
     dispatch(setModalContent(
       <MaterialForm 
@@ -87,10 +92,41 @@ const VendorDetails = () => {
     dispatch(setModalWidth('w-[60%]'));
     dispatch(setShowModal(true));
   };
+*/
 
-  const toggleHideCreate = () => {
+  const handleAdding = async () => {
+    const result = await dispatch(addMaterial(addMaterialContent));
+    console.log(result);
+    alert('Save all changes successful!');
     dispatch(setShowModal(false));
-    dispatch(setModalContent(null));
+    dispatch(setModalContent(''));
+    dispatch(addMaterialSubmitContent(null));
+    setShowAdding(false);
+    fetchMaterials();
+  }
+  const handleNo = () => {
+    dispatch(setShowModal(false));
+    dispatch(setModalContent(''));
+  } 
+  const toggleShowAdding = async () => {
+    if(editable && showAdding){
+      if(addMaterialContent === null || addMaterialContent.material_name === '' || addMaterialContent.material_price === 0 || addMaterialContent.material_unit_of_measure === '' ){
+        alert('Please give all information!');
+        return;
+      }else{
+        dispatch(setModalWidth('w-[280px]'));
+        dispatch(setModalContent(
+          <DeleteConfirmation 
+            text={"Save all changes?"}
+            yes={handleAdding}
+            no={handleNo}
+          />
+        ))
+        dispatch(setShowModal(true));
+      }
+  }else{
+    setShowAdding(!showAdding);
+  }
   }
 
   const fetchMaterials = async () => {
@@ -124,6 +160,7 @@ const VendorDetails = () => {
       }
     }
     setEditable(!editable);
+    setShowAdding(false);
   } 
 
   const handleBackendUpdate = async () => {
@@ -153,7 +190,7 @@ const VendorDetails = () => {
 
   const confirmDelete = () => {
     if(selectedIds.selected_ids.length === 0){
-      alert('Please, choose checkboxes whose you want to delete.')
+      alert('Please, choose one checkbox whose you want to delete.')
       return;
     }
     dispatch(setModalWidth('w-[280px]'));
@@ -186,7 +223,7 @@ const VendorDetails = () => {
   }
 
   return (
-    <div className='w-full h-fit font-alata transition-all duration-150'>
+    <div className='w-full h-full font-alata transition-all duration-150'>
       <Header title={
         <span>
           <Link className='hover:underline' to={'/vendors'}>{"Vendor List"}</Link> / <span className='font-light'>{thisVendorDetails.vendor_name}</span>
@@ -203,13 +240,15 @@ const VendorDetails = () => {
           )}
       </div>
       {/* form data */}
-      <div className='flex place-content-between bg-hover2 p-10 text-lg'>
+      <div className='flex place-content-between bg-hover2 bg-opacity-50 p-10 text-lg'>
         <div className='column flex-col space-y-2'>
           <DataItem 
           label="Vendor ID" 
           value={updatedData.vendor_id}
           type="text"
-          editable={false}/> 
+          editable={false}
+          viewOnly={!editable}
+          /> 
           <DataItem 
           label="Vendor Name" 
           id="vendor_name"
@@ -218,6 +257,7 @@ const VendorDetails = () => {
           onChange={handleChange}
           type="text"
           editable={editable}
+          viewOnly={!editable}
           /> 
           <DataItem 
           label="Phone" 
@@ -226,6 +266,7 @@ const VendorDetails = () => {
           onChange={handleChange}
           type="text"
           editable={editable}
+          viewOnly={!editable}
           /> 
         </div>
 
@@ -237,6 +278,7 @@ const VendorDetails = () => {
           onChange={handleChange}
           type="text"
           editable={editable}
+          viewOnly={!editable}
           /> 
         <DataItem 
           label="Tax Code"  
@@ -245,6 +287,7 @@ const VendorDetails = () => {
           onChange={handleChange}
           type="text"
           editable={editable}
+          viewOnly={!editable}
           /> 
         <DataItem 
           label="Address" 
@@ -253,11 +296,12 @@ const VendorDetails = () => {
           onChange={handleChange}
           type="text"
           editable={editable}
+          viewOnly={!editable}
           /> 
         </div>
 
         <div className='column flex-col space-y-2'>
-          <div className='flex place-content-between'>
+          <div className='flex place-content-between transition-all duration-200 ease-in-out'>
               <label className='min-w-40'>Vendor Status:</label>
               <Dropdown 
               options={vendor_status} 
@@ -277,6 +321,7 @@ const VendorDetails = () => {
           value={"0"}
           type="text"
           editable={false}
+          viewOnly={!editable}
           /> 
         </div>
       </div>
@@ -289,7 +334,7 @@ const VendorDetails = () => {
       <Header title="Supplied Products">
         {
           editable &&
-          <HeaderButton icon={AIcon} title='Add' onClick={toggleShowCreate} />
+          <HeaderButton icon={AIcon} title={showAdding ? 'Save Change' : 'Add'} onClick={toggleShowAdding} />
         }
         {
           editable &&
@@ -301,20 +346,25 @@ const VendorDetails = () => {
         JSON.stringify(thisVendorMaterials)
       } */}
       {
-        (thisVendorMaterials 
-          ? 
-          (
-            (thisVendorMaterials.length > 0) ?
-            <SuppliedTable initialData={thisVendorMaterials} editable={editable} />
-            : <div className='text-xl bg-secondary p-5 rounded-lg'>
-                This vendor doesn&#39;t have any material ! start adding some by clicking &#39;Edit&#39; button.
-              </div>
-          )
-          :
-          <div className='text-xl bg-secondary p-5 rounded-lg'>
-                Loading this vendor materials data...
-          </div>
-        )
+        // (thisVendorMaterials 
+        //   ? 
+        //   (
+            // (thisVendorMaterials.length > 0) ?
+            <SuppliedTable 
+            initialData={thisVendorMaterials} 
+            editable={editable} 
+            vendorId={thisVendorDetails.vendor_id} 
+            showAdding={showAdding}
+            />
+          //   : <div className='text-xl bg-secondary p-5 rounded-lg'>
+          //       This vendor doesn&#39;t have any material ! start adding some by clicking &#39;Edit&#39; button.
+          //     </div>
+          // )
+          // :
+          // <div className='text-xl bg-secondary p-5 rounded-lg'>
+          //       Loading this vendor materials data...
+          // </div>
+        //)
       }
     </div>
   )

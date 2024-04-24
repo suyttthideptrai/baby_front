@@ -15,7 +15,8 @@ export default {
       fontFamily: {
         sans: ['Roboto', 'Alata'],
         poppins: ['Poppins', 'sans-serif'],
-        alata: ['Alata', 'sans-serif']
+        alata: ['Alata', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
     },
   },

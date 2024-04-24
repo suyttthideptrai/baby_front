@@ -1,19 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const login = (username, password) => async (dispatch) => {
-    // dispatch(loginStart());
-    try {
-      const response = await axios.post("http://localhost:9999/api/v1/auth/authenticate", {
-        username,
-        password
-      });
-      const token = response.data;
-      dispatch(loginSuccess({ token })); 
-    } catch (error) {
-      dispatch(loginFailure(error.message));
-    }
-  };
+// export const login = (username, password) => async (dispatch) => {
+//     // dispatch(loginStart());
+//     try {
+//       const response = await axios.post("http://localhost:9999/api/v1/auth/authenticate", {
+//         username,
+//         password
+//       });
+//       const token = response.data;
+//       dispatch(loginSuccess({ token })); 
+//     } catch (error) {
+//       dispatch(loginFailure(error.message));
+//     }
+//   };
 
 //   export const createVendor = createAsyncThunk(
 //     'createVendor',
@@ -56,8 +56,9 @@ export const AuthSlice = createSlice({
     state.role = null;
     },
     setAuthenticated: (state, action) => {
-        state.isAuthenticated = action.payload;
-    }
+        state.isAuthenticated = action.payload.loginState;
+        state.token = action.payload.token
+    },
   },
   extraReducers: (builder) => {
     

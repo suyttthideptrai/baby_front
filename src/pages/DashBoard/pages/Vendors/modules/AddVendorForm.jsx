@@ -4,10 +4,13 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import xIcon from '../../../../../assets/icons/crud/x_icon.svg';
 import { setShowModal, setModalContent } from '../../../../../redux/modalSlices';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { getRequestHeaderWithBearerToken } from '../../../../../utils/utils';
 
 const VendorForm = ({ onSuccess, click }) => {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.authentication.token);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [vendorData, setVendorData] = useState({
     vendor_id: '',
     vendor_name: '',
@@ -37,10 +40,23 @@ const VendorForm = ({ onSuccess, click }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (token === null) {
+      alert('Something went wrong please login again');
+      return;
+    }
+    setIsSubmitting(true);
+    let response;
     try {
-      await axios.post('http://localhost:9999/api/crud/vendor/add', vendorData);
+      response = await axios.post('http://localhost:9999/api/crud/vendor/add', 
+      vendorData,
+      getRequestHeaderWithBearerToken(token)
+    );
+    if(response.status === 200) {
       alert('Vendor successfully added to the system.');
-      setVendorData({
+    }else{
+      alert('Error adding vendor. Please relogin and try again! If error persists contact admin.');
+    }
+    setVendorData({
         vendor_name: '',
         vendor_phone: '',
         vendor_email: '',
@@ -59,15 +75,15 @@ const VendorForm = ({ onSuccess, click }) => {
 
   return (
     <div className='p-1 w-auto bg-primary'>
-      <div className='bg-[#4285F4] flex place-content-between'>
-        <h2 className='font-bold text-lg p-1 text-center text-white'>Add New Vendor</h2>
-        <img className='w-6 mr-5 cursor-pointer' onClick={handleClick} src={xIcon} alt="" />
+      <div className='bg-[#4285F4] h-6 flex place-content-between items-center'>
+        <h2 className='font-bold text-md p-1 text-center text-white'>Add New Vendor</h2>
+        <img className='w-6 mr-5 cursor-pointer' src={xIcon} alt="" onDoubleClick={handleClick}/>
       </div>
       {/* {JSON.stringify(vendorData)} */}
       <div className='bg-white'>
-      <form onSubmit={handleSubmit}>
-        <div className='flex place-content-around'>
-            <div className='w-[40%]'>
+      
+        <div className='flex place-content-around p-10'>
+            <div className='w-auto'>
                 <FormInput
                 id="vendor_name"
                 label="Vendor Name"
@@ -84,10 +100,10 @@ const VendorForm = ({ onSuccess, click }) => {
                 onChange={handleChange}
                 required
                 />
-                <SubmitButton title={"Create"} />
+                <SubmitButton title={"Create"} func={handleSubmit} isSubmitting={isSubmitting} />
             </div>
 
-            <div className='w-[40%]'>
+            <div className='w-auto'>
                 {/* Unit of Measure */}
                 <FormInput
                 id="vendor_email"
@@ -122,31 +138,34 @@ const VendorForm = ({ onSuccess, click }) => {
                 />
             </div>
         </div>
-      </form>
+        
       </div>
     </div>
   );
 };
 
-export const SubmitButton = ({title, func}) => {
-    const handleSubmit = () => {
-        func();
+export const SubmitButton = ({title, func, isSubmitting}) => {
+    const handleSubmit = (e) => {
+        func(e);
     }
     return (
         <div className='p-5'>
-            <button onClick={handleSubmit} className='
+            <button onDoubleClick={handleSubmit} className='
             w-auto 
             border 
             mt-5
             p-2 
-            rounded-lg 
-            bg-primary 
-            text-white 
+            rounded-xl
+            bg-hover2 
+            text-black
             font-bold
             hover:bg-hover1
             hover:text-primary
-            duration-200
-            ' type="submit">{title}</button>
+            hover:rounded-md
+            duration-500
+            '
+            disabled={isSubmitting}
+            >{title}</button>
         </div>
     )
 }
@@ -190,5 +209,6 @@ VendorForm.propTypes = {
 
 SubmitButton.propTypes = {
     title: PropTypes.string,
-    func: PropTypes.func
+    func: PropTypes.func,
+    isSubmitting: PropTypes.bool
 }

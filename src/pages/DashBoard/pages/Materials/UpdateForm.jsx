@@ -15,7 +15,8 @@ const UpdateForm = ({ exit }) => {
     // const [query, setQuery] = useState('');
     // const [suggestions, setSuggestions] = useState([]);
     // const [isMaterialSelected, setIsMaterialSelected] = useState(false);
-    const data = useSelector(state => state.selectedIds.selectedMaterial)
+    const data = useSelector(state => state.selectedIds.selectedMaterial);
+    const token = useSelector(state => state.authentication.token);
     const [selectedMaterial, setSelectedMaterial] = useState({
         material_id: '',
         material_name: '',
@@ -87,11 +88,29 @@ const UpdateForm = ({ exit }) => {
         //setIsMaterialSelected(false);
     };
 
-    const handleUpdateButton = (e) => {
+    const handleUpdateButton = async (e) => {
+        if(token === null) {
+            alert("Error updating material. Please re-login and try again.");
+            return;
+        }
         e.preventDefault();
-        dispatch(updateMaterial(selectedMaterial));
-        alert("Update Success!");
-        success();
+        const actionResult = await dispatch(updateMaterial(selectedMaterial));
+        const isRejected = updateMaterial.rejected.match(actionResult);
+        const isFulfilled = updateMaterial.fulfilled.match(actionResult);
+
+        if (isFulfilled) {
+            alert("Update Success!");
+            success();
+        } else if (isRejected) {
+            // Check the status code and display an appropriate alert
+            if (actionResult.payload.status === 401) {
+              alert("Unauthorized. Please re-login and try again.");
+            } else if (actionResult.payload.status === 404) {
+              alert("Material not found.");
+            } else {
+              alert("Update Failed!");
+            }
+        }
     };
 
     const success = () => {
@@ -211,7 +230,7 @@ const UpdateForm = ({ exit }) => {
                     cursor-pointer 
                     duration-200 
                     mr-20
-                    ' onClick={handleUpdateButton}
+                    ' onDoubleClick={handleUpdateButton}
                     >
                         Save Changes
                     </button>

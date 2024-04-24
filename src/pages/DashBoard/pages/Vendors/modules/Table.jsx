@@ -102,6 +102,7 @@ const Row = ({ data }) => {
   
   return (
       <tr className="tracking-wide text-gray-600 hover:text-black hover:cursor-pointer border-y-2">
+        
         <td className="pl-3">
           <input className='w-5 h-5'
             type="checkbox"

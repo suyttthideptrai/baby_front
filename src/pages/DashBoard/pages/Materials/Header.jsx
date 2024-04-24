@@ -44,7 +44,7 @@ const HeaderButton = ({ icon, title, onClick, css }) => {
     }
 
     return (
-    <div className={"flex p-3 gap-x-2 rounded-md cursor-pointer duration-200 font-bold " + css } onClick={handleClick}>
+    <div className={"flex p-3 gap-x-2 rounded-md select-none cursor-pointer duration-200 font-bold " + css } onDoubleClick={handleClick}>
         <img className='w-5' src={icon} alt="" />
         <span>{title}</span>
     </div>)

@@ -30,7 +30,7 @@ export const HeaderButton = ({ icon, title, onClick, css }) => {
     }
 
     return (
-    <div className={"flex p-2 gap-x-2 rounded-md cursor-pointer duration-200 bg-secondary hover:bg-[#EAECF0] " + css } onClick={handleClick}>
+    <div className={"flex p-2.5 gap-x-2 rounded-xl cursor-pointer transition-all select-none duration-200 bg-secondary hover:rounded-md hover:bg-[#EAECF0] " + css } onDoubleClick={handleClick}>
         <img className='w-5' src={icon} alt="" />
         {
           title &&

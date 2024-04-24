@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const NavItem = ({ path, name, icon, css }) => {
   return (
     <li className=
-    {"flex items-center h-[50px] p-[5px_5px_5px_5px] hover:bg-[#525252] hover:bg-opacity-50 duration-200 " + css}
+    {"flex items-center h-[50px] py-6 hover:bg-[#525252] hover:bg-opacity-50 duration-200 " + css}
     >
       <Link to={path} className="flex items-center w-full h-full p-2">
         <img src={icon} alt={name} className="w-8 mr-2" />

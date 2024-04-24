@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, setAuthenticated} from '../../redux/auth';
+import { setAuthenticated} from '../../redux/auth';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import TextInput from '../../components/TextInput';
@@ -58,11 +58,15 @@ const LoginPage = ({ onLogin }) => {
       })
       .then(response => {
         if (response.status === 200) {
-          console.log(response.data);
+          //console.log(response.data);
           setPassword('');
-          dispatch(setAuthenticated(true));
-          const token = response.data;
-          localStorage.setItem('JWT', token);
+          const state = {
+            loginState: true,
+            token: response.data.token
+          }
+          dispatch(setAuthenticated(state));
+          //const token = response.data;
+          //localStorage.setItem('JWT', token);
           onLogin()
         } else if (response.status === 403){
           // alert("Login failed, wrong user credentials");
@@ -120,7 +124,7 @@ const LoginPage = ({ onLogin }) => {
               text-center
               '>
               <span className="
-              font-['Gilroy-Heavy','Roboto_Condensed']
+              font-alata
               font-extrabold
               text-[76px]
               capitalize
@@ -145,7 +149,7 @@ const LoginPage = ({ onLogin }) => {
                   <div className="m-[0_0_21px_0] inline-block break-words font-normal text-[16px] text-[#525252]">
                       &#34;Welcome Back! Your Gateway to a World of Opportunities.&#34;
                   </div>
-                  <form onSubmit={handleSubmit} className=' flex
+                  <div className=' flex
                                                             flex-col
                                                             items-center
                                                             w-[fit-content]
@@ -184,7 +188,7 @@ const LoginPage = ({ onLogin }) => {
                                             ">
                           Terms of use. Privacy policy
                       </a>
-                  </form>
+                  </div>
               </div>
             </div>
         </div>
@@ -227,7 +231,7 @@ const LoginPage = ({ onLogin }) => {
 };
 
 LoginPage.propTypes = {
-  onLogin: PropTypes.func.isRequired // Validate that 'onLogin' prop is a required function
+  onLogin: PropTypes.func
 };
 
 export default LoginPage;
