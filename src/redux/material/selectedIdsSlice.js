@@ -2,13 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:9999/api/crud/material';
+const API_PREFIX = import.meta.env.VITE_APP_API_CRUD_URL + "/material";
+// const BASE_URL = 'http://localhost:9999/api/crud/material';
 
 export const deleteMaterials = createAsyncThunk(
     'selectedIds/deleteMaterials',
     async (selectedIds, thunkAPI) => {
       try {
-        const endpoint = `${BASE_URL}/delete/bulk`;
+        const endpoint = `${API_PREFIX}/delete/bulk`;
         const payload = selectedIds;
         const response = await axios.post(endpoint, payload);
         return response.data;

@@ -7,8 +7,8 @@ import QuestionMarkIcon from '../../assets/icons/settings/help_icon.svg'
 const ConfirmationButton = ({ text, onClick }) => {
   return (
     <div
-      className='p-2 border-2 border-black rounded-lg text-center w-14 cursor-pointer hover:bg-primary duration-200 text-sm items-center'
-      onClick={onClick}
+      className='p-2 border-2 border-black rounded-lg text-center w-14 cursor-pointer hover:bg-primary duration-200 text-sm items-center select-none'
+      onDoubleClick={onClick}
     >
       {text}
     </div>

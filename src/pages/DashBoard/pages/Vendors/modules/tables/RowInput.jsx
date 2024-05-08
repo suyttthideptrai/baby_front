@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 const RowInput = ({type, name, onChanged}) => {
@@ -9,7 +9,17 @@ const RowInput = ({type, name, onChanged}) => {
       name={name} 
       min={type === 'number' ? '0' : undefined}
       placeholder={type === 'number' ? '0' : 'Enter text'}
-      onChange={onChanged}
+      onChange={
+        type === 'number' ?
+        (e) => {
+          if (e.target.value < 0 || e.target.value === '-') {
+            e.target.value = '';
+          }else{
+            onChanged(e)
+          }
+        } : 
+        (e) => onChanged(e)
+        }
       />
     </td>
   )

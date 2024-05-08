@@ -6,10 +6,12 @@ import RowInput from './RowInput';
 import Dropdown from '../../../../../../components/DropDown';
 import { addMaterialSubmitContent } from '../../../../../../redux/material/MaterialSlice';
 //import { addMaterialDetailsContent, toggleHideShowDetails } from "../../../../../../redux/material/MaterialSlice";
+import { formatCurrency } from '../../../../../../utils/utils';
 
 const SuppliedTable = ({ initialData, editable, showAdding, vendorId }) => {
   const dispatch = useDispatch();
   const materialTypes = useSelector(state => state.materials.types);
+  const addMaterialContent = useSelector(state => state.materials.addMaterialContent);
   const [materialData, setMaterialData] = useState({
     material_name: '',
     material_price: 0,
@@ -19,18 +21,32 @@ const SuppliedTable = ({ initialData, editable, showAdding, vendorId }) => {
     material_vendor_id: vendorId
   });
 
+  
 
   useEffect(() => {
-    dispatch(addMaterialSubmitContent(materialData));
-  }, [materialData])
+    if(addMaterialContent === null){
+      setMaterialData({
+        material_name: '',
+        material_price: 0,
+        material_unit_of_measure: '',
+        //material_warehouse_date: '',
+        material_type_id: 1,
+        material_vendor_id: vendorId
+      })
+    }else{
+      dispatch(addMaterialSubmitContent(materialData));
+    }
+  }, [materialData, dispatch, addMaterialContent])
   
   
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if(name === 'material_price' && parseInt(value) < 0){
+      setMaterialData({ ...materialData, [name]: 0 });
+    }
     setMaterialData({ ...materialData, [name]: value });
     //handleChangeRedux();
-    
   };
 
   const handleSelectAll = (event) => {
@@ -80,7 +96,7 @@ const SuppliedTable = ({ initialData, editable, showAdding, vendorId }) => {
         <tbody id="checkbox-container">
           {initialData && initialData.map(item => (
             <Row
-              key={item.material_id}
+              key={item.entity_id}
               data={item}
               editable={editable}
             />
@@ -154,26 +170,26 @@ const Row = ({ data, editable }) => {
                 <input className='w-5 h-5'
                   type="checkbox"
                   name="product-id"
-                  onChange={() => handleChecked(data.material_id)}
+                  onChange={() => handleChecked(data.entity_id)}
                 />
               }
           </td>
-          <td className="text-center">{data.material_name}</td>
-          <td className="text-center">{data.material_unit_of_measure}</td>
-          <td className="text-center">{data.material_price}</td>
+          <td className="text-center">{data.entity_name}</td>
+          <td className="text-center">{data.entity_unit_of_measure}</td>
+          <td className="text-center">{formatCurrency(data.entity_price)}</td>
           {/* <td className="text-center">{data.material_quantity == -1 ? "NOT EXIST" : data.material_quantity}</td> */}
-          <td className="text-center p-3">{getMaterialGroupName(data.material_type)}</td>
+          <td className="text-center p-3">{getMaterialGroupName(data.entity_type)}</td>
         </tr>
         )
 };
         
 Row.propTypes = {
 data: PropTypes.shape({
-          material_id: PropTypes.string.isRequired,
-          material_name: PropTypes.string.isRequired,
-          material_unit_of_measure: PropTypes.string.isRequired,
-          material_price: PropTypes.number.isRequired,
-          material_type: PropTypes.number.isRequired
+          entity_id: PropTypes.string.isRequired,
+          entity_name: PropTypes.string.isRequired,
+          entity_unit_of_measure: PropTypes.string.isRequired,
+          entity_price: PropTypes.number.isRequired,
+          entity_type: PropTypes.number.isRequired
 }).isRequired,
 toggleChecked: PropTypes.func,
 isChecked: PropTypes.bool,

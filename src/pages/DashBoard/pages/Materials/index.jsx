@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchAllMaterials, fetchTypes
-  , toggleHideShowUpdate
 } from '../../../../redux/material/MaterialSlice';
 import { 
   deleteMaterials
@@ -17,9 +16,9 @@ import DeleteConfirmation from '../../../../components/DeleteConfirmation/Delete
 import StatusMessage from '../../../../components/StatusMessage';
 import Table from './Table/Table'
 import UpdateForm from './UpdateForm';
-//import Header from './Header';
 import Header, { HeaderButton } from '../../../../components/ModuleHeader';
 
+import CreateExport from './CreateExport';  
 
 import deleteIcon from '../../../../assets/icons/crud/delete_icon.svg'
 import editIcon from '../../../../assets/icons/crud/edit_icon.svg'
@@ -27,13 +26,15 @@ import addIcon from '../../../../assets/icons/crud/add_icon.svg'
 import exportIcon from '../../../../assets/icons/crud/export_icon.svg'
 
 
+
 const MaterialsPage
  = () => {
   const dispatch = useDispatch();
   const materials = useSelector(state => state.materials);
   const idsToDelete = useSelector(state => state.selectedIds)
-
   const [message, setMessage] = useState("");
+  const [showExport, setShowExport] = useState(false);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -119,12 +120,27 @@ const MaterialsPage
     toggleShowUpdateForm();
   }
 
+  // EXPORT MATERIALS
+  const toggleShowExportForm = () => {
+    dispatch(setModalWidth('w-[72%]'));
+    dispatch(setModalContent(
+      <CreateExport exit={toggleHideExportForm} />
+    ))
+    dispatch(setShowModal(true));
+  }
+
+  const toggleHideExportForm = () => {
+    dispatch(setShowModal(false));
+    dispatch(setModalContent(null));
+    dispatch(setModalWidth('w-[10%]'));
+  }
+
   return (
     <div className='flex flex-col h-full font-alata'>
       <div>
         {/* <Header onDelete={handleDeleteConfirmation} onEdit={handleClickEdit}/> */}
         <Header title={"Material List"}>
-          <HeaderButton icon={exportIcon} title={"Export"} css={"bg-secondary hover:bg-hover2"} />
+          <HeaderButton icon={exportIcon} title={"Export"} onClick={toggleShowExportForm} css={"bg-secondary hover:bg-hover2"} />
           <HeaderButton icon={deleteIcon} title={"Delete"} onClick={handleDeleteConfirmation} css={"bg-secondary hover:bg-[#EAECF0]"}/>
           <HeaderButton icon={editIcon} title={"Edit"} onClick={handleClickEdit} css={"bg-secondary hover:bg-[#EAECF0]"}/>
         </Header>

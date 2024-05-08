@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { getRequestHeaderWithBearerToken } from '../../utils/utils';
-
+const API_PREFIX = import.meta.env.VITE_APP_API_CRUD_URL + "/material";
 export const fetchAllMaterials = createAsyncThunk(
   "fetchAllMaterials", async (_, { getState }) => {
     const token = getState().authentication.token;
-    const respond = await fetch("http://localhost:9999/api/crud/material/all",
+    const respond = await fetch(`${API_PREFIX}/all`,
     {
       method: 'GET',
       headers: { 
@@ -20,7 +20,7 @@ export const fetchAllMaterials = createAsyncThunk(
 export const fetchTypes= createAsyncThunk(
   "fetchTypes", async (_, { getState }) => {
     const token = getState().authentication.token;
-    const respond = await fetch("http://localhost:9999/api/crud/material/type/all",
+    const respond = await fetch(`${API_PREFIX}/type/all`,
     {
       method: 'GET',
       headers: { 
@@ -39,7 +39,7 @@ export const updateMaterial = createAsyncThunk(
     const token = getState().authentication.token;
     try {
       const response = await axios.put(
-        'http://localhost:9999/api/crud/material/update', 
+        `${API_PREFIX}/update`, 
         materialData,
         getRequestHeaderWithBearerToken(token)
       );
@@ -59,7 +59,7 @@ export const addMaterial = createAsyncThunk(
     }
     try {
       const response = await axios.post(
-        'http://localhost:9999/api/crud/material/add',
+        `${API_PREFIX}/add`,
         materialData,
         {
           headers: {
@@ -72,6 +72,30 @@ export const addMaterial = createAsyncThunk(
       } else {
         return rejectWithValue('Error adding material. Please relogin and try again! If error persists contact admin.');
       }
+    } catch (error) {
+      console.error('Error adding material:', error);
+      return rejectWithValue('Error adding material. Please try again.');
+    }
+  }
+);
+
+export const createExport = createAsyncThunk(
+  "createExport",
+  async (exportData, { getState, rejectWithValue }) => {
+    const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
+    try {
+      const response = await fetch(`${API_PREFIX}/export`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(exportData)
+      });
+      return response.json();
     } catch (error) {
       console.error('Error adding material:', error);
       return rejectWithValue('Error adding material. Please try again.');

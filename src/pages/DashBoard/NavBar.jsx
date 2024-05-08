@@ -25,7 +25,7 @@ export default function Navbar() {
         { path: '/materials', name: 'Materials', icon: MatIcon },
         { path: '/vendors', name: 'Vendors', icon: VendorsIcon },
         // { path: '/order-reqs', name: 'Order Requirement Management', icon: OrderReqIcon },
-        { path: '/purch-orders', name: 'Purchasing Orders', icon: AboutIcon },
+        { path: '/orders', name: 'Purchasing Orders', icon: AboutIcon },
         { path: '/inventory', name: 'Goods Receipts', icon: UsersIcon },
         // { path: '/users', name: 'User Management', icon: InventoryIcon }
       ];

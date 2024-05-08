@@ -11,7 +11,7 @@ const Header = ({ title, children }) => {
     items-center 
     place-content-center
     '>
-        <p className='font-bold text-xl'>
+        <p className='font-bold text-xl font-alata'>
             {title}
         </p>
         <div className='flex justify-self-end gap-x-6 items-center'>
@@ -34,14 +34,16 @@ export const HeaderButton = ({ icon, title, onClick, css }) => {
         <img className='w-5' src={icon} alt="" />
         {
           title &&
-          <span>{title}</span>
+          <span
+          className='font-alata'
+          >{title}</span>
         }
     </div>)
 }
 
 Header.propTypes = {
-    title: PropTypes.string,
-    children: PropTypes.element
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    children: PropTypes.oneOfType([PropTypes.array, PropTypes.object, PropTypes.string])
 };
 HeaderButton.propTypes = {
     title: PropTypes.string.isRequired,

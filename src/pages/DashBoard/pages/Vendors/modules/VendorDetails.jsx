@@ -39,6 +39,7 @@ import {
 
 import { useDispatch, useSelector } from 'react-redux'
 import DeleteConfirmation from '../../../../../components/DeleteConfirmation/DeleteConfirmation'
+import { VENDOR_STATUS } from '../../../../../utils/constant'
 
 const VendorDetails = () => {
   const dispatch = useDispatch();
@@ -63,21 +64,6 @@ const VendorDetails = () => {
     vendor_address: '',
     vendor_status: '',
   });
-
-  const vendor_status = [
-    {
-        "type_id": "ACTIVE",
-        "type_name": "ACTIVE"
-    },
-    {
-        "type_id": "INACTIVE",
-        "type_name": "INACTIVE"
-    },
-    {
-        "type_id": "INORDER",
-        "type_name": "INORDER"
-    }
-  ]
 
 /*
   const toggleShowCreate = () => {
@@ -110,20 +96,27 @@ const VendorDetails = () => {
   } 
   const toggleShowAdding = async () => {
     if(editable && showAdding){
-      if(addMaterialContent === null || addMaterialContent.material_name === '' || addMaterialContent.material_price === 0 || addMaterialContent.material_unit_of_measure === '' ){
+      if(addMaterialContent === null || 
+        addMaterialContent.material_name === '' || 
+        addMaterialContent.material_price === 0 || 
+        addMaterialContent.material_unit_of_measure === '' 
+      ){
         alert('Please give all information!');
         return;
-      }else{
-        dispatch(setModalWidth('w-[280px]'));
-        dispatch(setModalContent(
-          <DeleteConfirmation 
-            text={"Save all changes?"}
-            yes={handleAdding}
-            no={handleNo}
-          />
-        ))
-        dispatch(setShowModal(true));
       }
+      if(addMaterialContent.material_price < 0){
+        alert('Material price must be greater than 0!');
+        return;
+      }
+      dispatch(setModalWidth('w-[280px]'));
+      dispatch(setModalContent(
+        <DeleteConfirmation 
+          text={"Save all changes?"}
+          yes={handleAdding}
+          no={handleNo}
+        />
+      ))
+      dispatch(setShowModal(true));
   }else{
     setShowAdding(!showAdding);
   }
@@ -135,8 +128,10 @@ const VendorDetails = () => {
   }
 
   useEffect(() => {
+    if(thisVendorDetails === null || thisVendorDetails.length === 0){
+      navigate('/vendors');
+    }
     fetchMaterials();
-    console.log(thisVendorDetails);
     setUpdatedData(thisVendorDetails);
   }, [])
 
@@ -224,6 +219,7 @@ const VendorDetails = () => {
 
   return (
     <div className='w-full h-full font-alata transition-all duration-150'>
+      {/* {JSON.stringify(addMaterialContent)} */}
       <Header title={
         <span>
           <Link className='hover:underline' to={'/vendors'}>{"Vendor List"}</Link> / <span className='font-light'>{thisVendorDetails.vendor_name}</span>
@@ -304,7 +300,7 @@ const VendorDetails = () => {
           <div className='flex place-content-between transition-all duration-200 ease-in-out'>
               <label className='min-w-40'>Vendor Status:</label>
               <Dropdown 
-              options={vendor_status} 
+              options={VENDOR_STATUS} 
               selectedOption={updatedData.vendor_status}  
               onChange={handleDropdownChange} 
               editable={editable}

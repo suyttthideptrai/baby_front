@@ -12,8 +12,9 @@ import VendorsPage from "./pages/Vendors";
 import VendorDetails from './pages/Vendors/modules/VendorDetails';
 import UsersPage from "./pages/Users";
 import AboutPage from "./pages/About";
-import LoginPage from '../Login';
 import Logout from '../Login/Logout';
+import OrderDetailsCreate from './pages/PurchasingOrders/modules/OrderDetailsCreate';
+import CreateOrder from './pages/PurchasingOrders/modules/CreateOrder';
 
 function DashBoardPage() {
   const [settingsVisibility, setSettingsVisibility] = useState(false)
@@ -43,10 +44,11 @@ function DashBoardPage() {
             <div className='flex-grow items-start h-screen'>
               <Routes>
                 {/* <Route path="/" element={<App />} /> */}
-                {/* <Route path="/login" element={<LoginPage />} /> */}
                 <Route path="/materials" element={<MaterialsPage />} />
                 <Route path="/order-reqs" element={<OrderRequirementPage />} />
-                <Route path="/purch-orders" element={<PurchasingOrdersPage />} />
+                <Route path="/orders" element={<PurchasingOrdersPage />} />
+                  <Route path="/orders/new" element={<CreateOrder />} />
+                  <Route path="/orders/details" element={<OrderDetailsCreate isCreate={false} />} />
                 <Route path="/inventory" element={<InventoryPage />} />
                 <Route path="/vendors" element={<VendorsPage />} />
                 <Route 

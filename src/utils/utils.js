@@ -9,7 +9,7 @@ export const formatCurrency = (num) => {
           if (typeof num !== 'number' || isNaN(num)) {
                     return 'NaN';
           }
-          console.log(num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."))
+          //console.log(num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."))
           return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
@@ -34,3 +34,13 @@ export const getRequestHeaderWithBearerToken = (token) => {
         }
         return result;
 }
+
+export function convertISOToDate(isoDateString) {
+        const date = new Date(isoDateString);
+    
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+        const year = date.getFullYear();
+    
+        return `${day}/${month}/${year}`;
+    }
