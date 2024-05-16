@@ -1,33 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// export const login = (username, password) => async (dispatch) => {
-//     // dispatch(loginStart());
-//     try {
-//       const response = await axios.post("http://localhost:9999/api/v1/auth/authenticate", {
-//         username,
-//         password
-//       });
-//       const token = response.data;
-//       dispatch(loginSuccess({ token })); 
-//     } catch (error) {
-//       dispatch(loginFailure(error.message));
-//     }
-//   };
-
-//   export const createVendor = createAsyncThunk(
-//     'createVendor',
-//     async (vendorPayload, thunkAPI) => {
-//       try {
-//         const endpoint = "http://localhost:9999/api/v1/auth/authenticate";
-//         const payload = vendorPayload;
-//         const response = await axios.post(endpoint, payload);
-//         return response.data;
-//       } catch (error) {
-//         return thunkAPI.rejectWithValue(error.response.data);
-//       }
-//     }
-//   );
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async (_, {rejectWithValue, getState}) => {
+    const endpoint = import.meta.env.VITE_APP_API_URL + "/v1/auth/logout";
+    const token = getState().authentication.token;
+    console.log(token);
+    try {
+      const response = await axios.post(endpoint, {}, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 export const AuthSlice = createSlice({
   name: 'authentication',
@@ -35,6 +26,7 @@ export const AuthSlice = createSlice({
     isAuthenticated: false,
     role: null,
     token: null,
+    username: null,
     loading: false,
     error: null
   },
@@ -50,22 +42,36 @@ export const AuthSlice = createSlice({
     state.loading = false;
     state.error = action.payload;
     },
-    logout: (state) => {
-    state.isAuthenticated = false;
-    state.token = null;
-    state.role = null;
-    },
     setAuthenticated: (state, action) => {
         state.isAuthenticated = action.payload.loginState;
-        state.token = action.payload.token
+        state.token = action.payload.token,
+        state.role = action.payload.role,
+        state.username = action.payload.username
+        //console.log(action.payload.token);
     },
   },
   extraReducers: (builder) => {
-    
+    builder.addCase(logout.pending, (state) => {
+      state.role = null;
+      state.username = null;
+      state.isAuthenticated = false;
+      state.loading = true;
+      state.error = false;
+    });
+    builder.addCase(logout.fulfilled, (state) => {
+      state.token = null;
+      state.loading = false;
+      state.error = false;
+    });
+    builder.addCase(logout.rejected, (state, action) => {
+      state.token = null;
+      state.loading = false;
+      state.error = true;
+    });
   }
 });
 
 export const { 
-    loginSuccess, loginFailure, logout, setAuthenticated
+    loginSuccess, loginFailure, setAuthenticated
 } = AuthSlice.actions;
 export default AuthSlice.reducer;

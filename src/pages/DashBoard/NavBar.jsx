@@ -1,17 +1,17 @@
 import React from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import Logout from "../Login/Logout";
 import NavItem from "./NavItem";
-import MatIcon from "../../assets/icons/sidebar/materialIcon_x2.svg"
-import OrderReqIcon from "../../assets/icons/sidebar/orderIcon_x2.svg"
-import PurchOrder from "../../assets/icons/sidebar/group_x2.svg"
-import InventoryIcon from "../../assets/icons/sidebar/vector23_x2.svg"
 import VendorsIcon from "../../assets/icons/sidebar/vendors.svg"
-import UsersIcon from "../../assets/icons/sidebar/vector_x2 (2).svg"
 import LogoutIcon from "../../assets/icons/sidebar/logout.svg"
-import AboutIcon from "../../assets/icons/sidebar/financialPlanning_x2.svg"
+import ExportIcon from "../../assets/icons/crud/export_icon.svg"
+
+import MaterialIcon from '../../assets/icons/sidebar/nav_materials.svg'
+import OrderIcon from '../../assets/icons/sidebar/nav_orders.svg'
+import ReceiptIcon from '../../assets/icons/sidebar/nav_receipts.svg'
+import GearIcon from '../../assets/icons/topbar/gear.svg'
 
 
 
@@ -20,25 +20,30 @@ export default function Navbar() {
     // const dispatch = useDispatch();
     const [path, setPath] = useState("");
     const navigate = useNavigate();
+    const [activeNav, setActiveNav] = useState(null);
 
     const navItems = [
-        { path: '/materials', name: 'Materials', icon: MatIcon },
-        { path: '/vendors', name: 'Vendors', icon: VendorsIcon },
-        // { path: '/order-reqs', name: 'Order Requirement Management', icon: OrderReqIcon },
-        { path: '/orders', name: 'Purchasing Orders', icon: AboutIcon },
-        { path: '/inventory', name: 'Goods Receipts', icon: UsersIcon },
+        { path: '/materials', name: 'Materials', icon: MaterialIcon },
+        { path: '/exports', name: 'Exports History', icon: ExportIcon },
+        { path: '/vendors', name: 'Vendors', icon: VendorsIcon },  
+        { path: '/orders', name: 'Purchasing Orders', icon: OrderIcon },
+        { path: '/receipts', name: 'Goods Receipts', icon: ReceiptIcon },
         // { path: '/users', name: 'User Management', icon: InventoryIcon }
       ];
 
     useEffect(( ) => {
         setPath(location.pathname)
     }, [location])
+
+    const handleSetActiveNav = (path) => {
+        setActiveNav(path);
+    }
     return (
         <div className={"bg-[#4285F4] h-screen select-none"}>
             <div className='text-center self-start'>
                 <span className="
-                    font-popins
-                    font-extrabold 
+                    font-gilroy
+                    font-extrabold
                     pl-5 pr-5 
                     text-[48px]
                     capitalize
@@ -49,11 +54,19 @@ export default function Navbar() {
             <div className="font-popins text-[16px] flex flex-col place-content-between h-[70%]">
                 <ul className="flex flex-col space-y-3">
                 {navItems.map((item, index) => (
-                    <NavItem key={index} path={item.path} name={item.name} icon={item.icon} />
+                    <NavItem 
+                        key={index} 
+                        path={item.path} 
+                        name={item.name} 
+                        icon={item.icon}
+                        activeNav={activeNav}
+                        onClick={handleSetActiveNav}
+                    />
                 ))}
                 </ul>
                 <ul className="flex flex-col space-y-3">
-                    <NavItem path="/about" name="Settings" icon={PurchOrder} /*css={"bg-[#525252] bg-opacity-50 hover:bg-opacity-100"} */ />
+                    {/* <NavItem path="/users" name="Manage Users" icon={InventoryIcon}/> */}
+                    <NavItem path="/about" name="Settings" icon={GearIcon} onClick={handleSetActiveNav} />
                     <NavItem path="/logout" name="Log Out" icon={LogoutIcon}/>
                 </ul>
             </div>

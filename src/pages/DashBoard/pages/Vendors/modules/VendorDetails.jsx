@@ -14,6 +14,7 @@ import MaterialDetails from '../../Materials/MaterialDetails'
 import SuppliedTable from './tables/SuppliedTable'
 import { HeaderButton } from '../../../../../components/ModuleHeader'
 import Dropdown from '../../../../../components/DropDown'
+import StatusCell from '../../../../../components/StatusCell'
 
 import { 
   removeVendorDetailsContent, 
@@ -237,7 +238,7 @@ const VendorDetails = () => {
       </div>
       {/* form data */}
       <div className='flex place-content-between bg-hover2 bg-opacity-50 p-10 text-lg'>
-        <div className='column flex-col space-y-2'>
+        <div className='column flex-col space-y-2 w-[30%]'>
           <DataItem 
           label="Vendor ID" 
           value={updatedData.vendor_id}
@@ -266,7 +267,7 @@ const VendorDetails = () => {
           /> 
         </div>
 
-        <div className='column flex-col space-y-2'>
+        <div className='column flex-col space-y-2 w-auto'>
         <DataItem 
           label="Email" 
           name="vendor_email"
@@ -296,16 +297,20 @@ const VendorDetails = () => {
           /> 
         </div>
 
-        <div className='column flex-col space-y-2'>
-          <div className='flex place-content-between transition-all duration-200 ease-in-out'>
-              <label className='min-w-40'>Vendor Status:</label>
-              <Dropdown 
-              options={VENDOR_STATUS} 
-              selectedOption={updatedData.vendor_status}  
-              onChange={handleDropdownChange} 
-              editable={editable}
-              />
-          </div>
+        <div className='column flex-col space-y-2 w-[30%]'>
+          <div className='flex items-center place-content-between w-auto'>
+                <label className='w-auto font-bold'>Status:</label>
+                <div className=' w-1/3 h-full'>
+                  <StatusCell 
+                    isRounded={true}
+                    statusData={VENDOR_STATUS}
+                    statusCode={updatedData.vendor_status}
+                  />
+                </div>
+                <div className='w-1/3'>
+
+                </div>
+            </div>
           <div>
             {/* spacer */}
             {/* {

@@ -11,8 +11,9 @@ import UNicon from './../../assets/icons/vector2_x2.svg';
 import PWicon from './../../assets/icons/vector_x2.svg';
 import BicycleSym from './../../assets/symbols/bicycle.svg';
 import WaitingSymbol from '../../assets/symbols/tube-spinner.svg'
+import { jwtDecode } from 'jwt-decode';
 
-const LoginPage = ({ onLogin }) => {
+const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -60,14 +61,17 @@ const LoginPage = ({ onLogin }) => {
         if (response.status === 200) {
           //console.log(response.data);
           setPassword('');
+          const token = response.data.token;
+          const decoded = jwtDecode(token);
+          const role = decoded.rol[0];
+          const username = decoded.sub;
           const state = {
             loginState: true,
-            token: response.data.token
+            token: response.data.token,
+            role: role,
+            username: username
           }
           dispatch(setAuthenticated(state));
-          //const token = response.data;
-          //localStorage.setItem('JWT', token);
-          onLogin()
         } else if (response.status === 403){
           // alert("Login failed, wrong user credentials");
           setErrorMessage("Wrong Username or Password");
@@ -118,24 +122,25 @@ const LoginPage = ({ onLogin }) => {
       w-[140px]
       h-1/10' alt="" />
             <div className='
-              flex-column
+              flex flex-col 
               p-[1px_40px_95px_40px]
               items-center
+              place-content-center
+              justify-center
               text-center
               '>
               <span className="
-              font-alata
-              font-extrabold
-              text-[76px]
-              capitalize
-              text-[#2F88FF]" style={{textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'}}>
+              font-gilroy
+              text-[96px]
+              text-[#2F88FF] 
+              select-none" style={{textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'}}>
                   BabySmile
               </span>
-              <div className=' flex
+              <div className=' 
+              flex
               flex-col
               items-center
               w-[fit-content]
-              box-sizing-border
               font-poppins'>
                   <div className="m-[0_42.8px_6px_0] 
                   inline-block 
@@ -184,7 +189,8 @@ const LoginPage = ({ onLogin }) => {
                                             font-normal 
                                             text-[15px] 
                                             text-[#525252]
-                                            hover:underline decoration-1
+                                            hover:underline decoration-1 
+                                            select-none cursor-pointer
                                             ">
                           Terms of use. Privacy policy
                       </a>
@@ -214,7 +220,7 @@ const LoginPage = ({ onLogin }) => {
                 font-semibold 
                 text-[32px] 
                 text-[#F4F2ED] 
-                text-left
+                text-left select-none
                 ">
                 &#34;Companion in <br /> every cycling <br /> trip, explore the <br /> world of <br /> children.&#34;
                 </span>

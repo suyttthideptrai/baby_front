@@ -10,6 +10,8 @@ import {
 } from '../../../../../redux/order/orderSlice';
 import { setVendorDetailsId } from '../../../../../redux/vendor/VendorSlice';
 import { formatCurrency, convertISOToDate } from '../../../../../utils/utils';
+import StatusCell from '../../../../../components/StatusCell';
+import { ORDER_STATUS } from '../../../../../utils/constant';
 
 const Table = ({ initialData }) => {
   const dispatch = useDispatch();
@@ -107,13 +109,19 @@ const Row = ({ data, click, click2, check }) => {
          onChange={() => handleCheck(data.order_id)}
          />
       </td>
-      <td className='text-center text-black' onClick={handleClick}>{data.order_id}</td>
-      <td onClick={handleClick}>{data.order_title}</td>
+      <td className='text-center text-black font-semibold hover:underline' onClick={handleClick}>{data.order_id}</td>
+      <td onClick={handleClick} className='text-center'>{data.order_title}</td>
       <td className='text-center'>{convertISOToDate(data.order_date)}</td>
       <td className='text-center'>{data.order_due_date ? convertISOToDate(data.order_due_date) : 'N/A'}</td>
       <td className='text-center'>{formatCurrency(data.order_total_price)}</td>
-      <td className='text-center'>{data.order_status}</td>
-      <td className='text-center text-black' onClick={handleClickVendor}>{data.order_vendor_id}</td>
+      <td className='text-center'>
+        <StatusCell 
+        isRounded={false} 
+        statusData={ORDER_STATUS} 
+        statusCode={data.order_status} 
+        />
+      </td>
+      <td className='text-center text-black font-semibold hover:underline' onClick={handleClickVendor}>{data.order_vendor_id}</td>
     </tr>
   );
 };

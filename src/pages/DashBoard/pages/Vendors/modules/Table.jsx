@@ -9,6 +9,8 @@ import {
 } from '../../../../../redux/vendor/VendorSlice';
 
 import Status from './Status';
+import StatusCell from '../../../../../components/StatusCell';
+import { VENDOR_STATUS } from '../../../../../utils/constant';
 
 const Table = ({initialData}) => {
 
@@ -39,12 +41,12 @@ const Table = ({initialData}) => {
     <div className='w-full overflow-auto'>
       <table className='table-auto w-full'>
         <thead className='tracking-wider'>
-          <tr>
+          <tr className='text-xl'>
             <th className='w-10 p-3'><input className='w-5 h-5' type="checkbox" onChange={handleSelectAll}/></th>
             <th className='w-[10%] text-left'>Vendor ID</th>
             <th className='w-[15%] text-left'>Vendor Name</th>
             <th className='w-[15%] text-left'>Phone</th>
-            <th className='w-[15%] text-center'>Email</th>
+            <th className='w-[15%] text-left'>Email</th>
             <th className='w-auto'>Suppiled Type(s)</th>
             <th className='w-[10%]'>Status</th>
           </tr>
@@ -110,12 +112,18 @@ const Row = ({ data }) => {
             onChange={() => handleChecked(data.vendor_id)}
           />
         </td>
-        <td onClick={toggleShowVendorDetails} className="text-black text-left">{data.vendor_id}</td>
+        <td onClick={toggleShowVendorDetails} className="text-black text-left font-semibold hover:underline">{data.vendor_id}</td>
         <td onClick={toggleShowVendorDetails} className="text-left">{data.vendor_name}</td>
         <td className="text-left">{data.vendor_phone}</td>
         <td className="text-left">{data.vendor_email}</td>
         <td className="text-center">{data.vendor_supplied_types.join(', ')}</td>
-        <td className="text-center p-3"><Status status={data.vendor_status} /></td>
+        <td className="text-center p-3 text-lg">
+          <StatusCell 
+            statusData={VENDOR_STATUS}
+            statusCode={data.vendor_status}
+            isRounded={false}   
+          />
+        </td>
       </tr>
     );
   };

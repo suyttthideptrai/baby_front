@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Dropdown from '../../../../../components/DropDown';
 import { ORDER_MATERIAL_STATUS } from '../../../../../utils/constant';
 import { formatCurrency } from '../../../../../utils/utils';
+import StatusCell from '../../../../../components/StatusCell';
 
 const DetailsTable = ({ initialData }) => {
   return (
@@ -14,6 +15,7 @@ const DetailsTable = ({ initialData }) => {
               <th>Material Name</th>
               <th>Unit of Measure</th>
               <th>Quantity</th>
+              <th>Delivered</th>
               <th>Unit Price (VND)</th>
               <th>Status</th>
             </tr>
@@ -37,8 +39,17 @@ const Row = ({ data, index }) => {
       <td className='text-center'>{data.material_name}</td>
       <td className='text-center'>{data.material_unit_of_measure}</td>
       <td className='text-center'>{data.material_quantity}</td>
+      <td className='text-center'>{data.material_actual_quantity}</td>
       <td className='text-center'>{formatCurrency(data.material_price_per_unit)}</td>
-      <td>{<Dropdown options={ORDER_MATERIAL_STATUS} editable={false} selectedOption={data.material_status} />}</td>
+      <td className='h-10 w-[15%]'>
+        <div className='px-5 h-full'>
+          <StatusCell 
+            statusData={ORDER_MATERIAL_STATUS} 
+            isRounded={true} 
+            statusCode={data.material_status} 
+          />
+        </div>
+      </td>
     </tr>
   );
 };

@@ -5,26 +5,30 @@ import GlobeIcon from '../../assets/icons/topbar/globe.svg';
 import PersonIcon from '../../assets/icons/topbar/person.svg';
 import BurgerIcon from '../../assets/icons/topbar/burger.svg';
 import WhiteLogo from '../../assets/symbols/Logo_White.svg';
+import WhiteLogo2 from '../../assets/symbols/LogoWhite2Svg.svg'
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 const TopBar = ({gearFunc, bellFunc, globeFunc, profileFunc, toggleFunc, notifications}) => {
+    const username = useSelector(state => state.authentication.username);
   return (
     <div className='font-alata flex h-[8%] p-1 bg-[#4285F4] w-screen items-center place-content-between'>
         <div className='justify-self-start self-end'>
-            <div className='ml-2 '>
-                <img className='w-24' src={WhiteLogo} alt="" />
+            <div className='ml-1 flex-col place-content-between'>
+                <div></div>
+                <img className='w-24' src={WhiteLogo2} alt="" />
             </div>
         </div>
         <div className='flex items-center gap-x-16'>
             <div className='flex gap-x-8'>
-                <TopItem icon={GearIcon} number={9} func={gearFunc}/>
+                {/* <TopItem icon={GearIcon} number={9} func={gearFunc}/> */}
                 <TopItem icon={BellIcon} number={0} func={bellFunc}/>
                 <TopItem icon={GlobeIcon} number={0} func={globeFunc}/>
             </div>
             <div className='flex gap-x-2 items-center'>
                 <img className='w-8' src={PersonIcon} alt="" />
                 <div className='text-white'>
-                    <span>Nguyen Van A</span>
+                    <span>{username}</span>
                 </div>
             </div>
             <div className='mr-9'>

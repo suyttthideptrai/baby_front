@@ -17,6 +17,7 @@ export default {
         poppins: ['Poppins', 'sans-serif'],
         alata: ['Alata', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
+        gilroy: ['gilroy-heavy', 'sans-serif'],
       },
     },
   },

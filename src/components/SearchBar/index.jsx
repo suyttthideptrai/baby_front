@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import searchIcon from '../../assets/icons/search_icon.svg';
 
 
 /**
@@ -8,26 +9,28 @@ import PropTypes from 'prop-types';
  * false -> suggestions are displayed elsewhere (developer must handle the display based on suggestionsDataOut)
  */
 const SearchBar = ({
-  endpoint,
-  selfSuggest,
-  suggestionsDataOut,
-  onSuggestionSelected,
-  placeHolder,
-  containerStyle,
+  endpoint, // endpoint for fetching suggestions
+  selfSuggest, // 
+  suggestionsDataOut, // function to output suggestions data
+  onSuggestionSelected, // function to handle selected suggestion
+  placeHolder, // placeholder for search input
+  containerStyle, 
   inputStyle,
   suggestionsStyle,
-  onChangeQueryAfterSelect
+  onChangeQueryAfterSelect // remove data when query changes after selecting a suggestion
 }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [isFound, setIsFound] = useState(false);
   let timeoutId = null;
 
   useEffect(() => {
-    if (typeof(query) === 'string' && query.trim() === '') {
+    if (typeof(query) === 'string' && query.trim() === '' && selfSuggest === true) {
+      console.log('query is empty')
       setSuggestions([]);
       return;
     }
+    console.log('is found: ' + isFound);
     if(!isFound){
       if (timeoutId) {
         clearTimeout(timeoutId);
@@ -45,12 +48,14 @@ const SearchBar = ({
         }
       };
     }
-  }, [query, isFound]);
+  }, [query]);
+
+  // suggest == false -> suggestions are displayed elsewhere
   useEffect(() => {
     if(selfSuggest === false){
       suggestionsDataOut(suggestions);
     }
-  }, [suggestions, selfSuggest]);
+  }, [suggestions]);
 
   const fetchSuggestions = async (query) => {
     try {
@@ -67,7 +72,9 @@ const SearchBar = ({
   };
 
   const handleChange = (event) => {
-    setIsFound(false);
+    if(isFound){
+      setIsFound(false);
+    }
     if(selfSuggest === true){
       onChangeQueryAfterSelect();
     }
@@ -75,23 +82,34 @@ const SearchBar = ({
   };
 
   const handleSelectSuggestions = (suggestion) => {
-    setQuery(suggestion.entity_name);
-    setIsFound(true);
-    setSuggestions([]);
+    console.log('selected suggestion: ' + suggestion.entity_name);
     onSuggestionSelected(suggestion);
+    if(isFound === false){
+      setIsFound(true);
+    }
+    setQuery(suggestion.entity_name);
+    if(selfSuggest === true){
+      setSuggestions([]);
+    }else{
+      suggestionsDataOut(suggestions);
+    }
   }
 
   return (
     <div className={containerStyle && containerStyle}>
+      <div className='flex items-center bg-white p-1 rounded-md border-2'>
+      <img className='w-6 h-6' src={searchIcon} alt="" />
+      <div className='w-2'></div>
       <input
         type="text"
         value={query}
         onChange={(e) => handleChange(e)}
         placeholder={placeHolder ? placeHolder : 'Search...'}
         //className={inputStyle && inputStyle}
-        className="p-1"
+        className="bg-inherit text-md outline-none w-full"
       />
-      {(suggestions.length > 0 && selfSuggest === true) && (
+      </div>
+      {(suggestions.length > 0 && selfSuggest === true) ? (
         <ul
         className='absolute z-10 '
         >
@@ -100,7 +118,7 @@ const SearchBar = ({
             key={index} 
             onClick={handleSelectSuggestions.bind(this, suggestion)}
             //className={suggestionsStyle && suggestionsStyle}
-            className='p-1 flex place-content-between bg-white w-full border-b-2 cursor-pointer'
+            className='p-1 flex place-content-between bg-white w-full border-b-2 cursor-pointer rounded-md hover:bg-gray-200 duration-200'
             >
               <span>
               {suggestion.entity_name ? suggestion.entity_name : "undefined"}
@@ -111,7 +129,18 @@ const SearchBar = ({
             </li>
           ))}
         </ul>
-      )}
+      )
+      :
+      !isFound && selfSuggest && (query !== null)
+      ?
+      <li className='p-1 flex place-content-between bg-white border-b-2 absolute z-10'>
+            <span>
+              No suggestions found
+            </span>
+      </li>
+      :
+      ''
+      }
     </div>
   );
 };

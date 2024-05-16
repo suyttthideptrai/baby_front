@@ -5,11 +5,16 @@ const API_PREFIX = import.meta.env.VITE_APP_API_CRUD_URL;
 
 export const fetchOrderDetails = createAsyncThunk(
   'fetchOrderDetails',
-  async (order_id) => {
+  async (order_id, {rejectWithValue, getState}) => {
+    const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
     const response = await fetch(`${API_PREFIX}/order/id/${order_id}`, {
       method: 'GET',
       headers: { 
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       }
     });
     return response.json();
@@ -20,11 +25,16 @@ export const fetchOrderDetails = createAsyncThunk(
 
 export const fetchOrders = createAsyncThunk(
           'fetchOrders',
-          async () => {
+          async (_, {rejectWithValue, getState}) => {
+            const token = getState().authentication.token;
+            if (!token) {
+              return rejectWithValue('Something went wrong please login again');
+            }
             const response = await fetch(`${API_PREFIX}/order/all`, {
               method: 'GET',
               headers: { 
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
               }
             });
             return response.json();
@@ -33,31 +43,41 @@ export const fetchOrders = createAsyncThunk(
 
 export const deleteOrders = createAsyncThunk(
   'deleteVendors',
-  async (selectedOrderIds, thunkAPI) => {
+  async (selectedOrderIds, {rejectWithValue, getState}) => {
     try {
+      const token = getState().authentication.token;
+      if (!token) {
+        return rejectWithValue('Something went wrong please login again');
+      }
       const endpoint = `${API_PREFIX}/order/delete`;
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify(selectedOrderIds)
       });
       return response.json();
       } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data);
     }
   }
 );
 
 export const createOrder = createAsyncThunk(
   'createOrder',
-  async (orderData, { rejectWithValue }) => {
+  async (orderData, { rejectWithValue, getState }) => {
     try {
+      const token = getState().authentication.token;
+      if (!token) {
+        return rejectWithValue('Something went wrong please login again');
+      }
       const response = await fetch(`${API_PREFIX}/order/add`, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify(orderData)
       });
@@ -74,7 +94,7 @@ export const createOrder = createAsyncThunk(
 const orderSlice = createSlice({
   name: 'order',
   initialState: { 
-          orders: [], 
+          orders: [],
           selectedOrderIds: [],
           detailsId: null,
           orderDetails: [],

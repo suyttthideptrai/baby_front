@@ -3,12 +3,17 @@ import axios from 'axios';
 const API_PREFIX = import.meta.env.VITE_APP_API_CRUD_URL + "/vendor";
 
 export const fetchAllVendors = createAsyncThunk(
-  "fetchAllVendors", async () => {
+  "fetchAllVendors", async (_, {rejectWithValue, getState}) => {
+    const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
     const respond = await fetch(`${API_PREFIX}/all`,
     {
       method: 'GET',
       headers: { 
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json', 
+        'Authorization': 'Bearer ' + token
       }
     })
     return respond.json();
@@ -16,12 +21,17 @@ export const fetchAllVendors = createAsyncThunk(
 )
 
 export const fetchVendorMaterials = createAsyncThunk(
-  "fetchVendorMaterials", async (vendor_id) => {
+  "fetchVendorMaterials", async (vendor_id, {rejectWithValue, getState}) => {
+    const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
     const respond = await fetch(`${API_PREFIX}/material/${vendor_id}`,
     {
       method: 'GET',
       headers: { 
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       }
     })
     return respond.json();
@@ -30,40 +40,76 @@ export const fetchVendorMaterials = createAsyncThunk(
 
 export const createVendor = createAsyncThunk(
     'createVendor',
-    async (vendorPayload, thunkAPI) => {
+    async (vendorPayload, {rejectWithValue, getState}) => {
+      const token = getState().authentication.token;
+      if (!token) {
+        return rejectWithValue('Something went wrong please login again');
+      }
       try {
         const endpoint = `${API_PREFIX}/add`;
         const payload = vendorPayload;
-        const response = await axios.post(endpoint, payload);
+        const response = await axios.post(endpoint, 
+          payload,
+          {
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
         return response.data;
       } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return rejectWithValue(error.response.data);
       }
     }
   );
 
 export const deleteVendors = createAsyncThunk(
     'deleteVendors',
-    async (selectedIds, thunkAPI) => {
+    async (selectedIds, {rejectWithValue, getState}) => {
       try {
+        const token = getState().authentication.token;
+        if (!token) {
+          return rejectWithValue('Something went wrong please login again');
+        }
         const endpoint = `${API_PREFIX}/delete/bulk`;
         const payload = selectedIds;
-        const response = await axios.post(endpoint, payload);
+        const response = await axios.post(endpoint, 
+          payload,
+          {
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
         return response.data;
       } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return rejectWithValue(error.response.data);
       }
     }
   );
 
 export const updateVendor = createAsyncThunk(
   'updateVendor',
-  async (vendorData, thunkAPI) => {
+  async (vendorData, {rejectWithValue, getState}) => {
+    const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
     try {
-      const response = await axios.put(`${API_PREFIX}/update`, vendorData);
+      const response = await axios.put(`${API_PREFIX}/update`, vendorData
+      ,
+      {
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        }
+      }
+      );
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data);
     }
   }
 );

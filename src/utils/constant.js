@@ -1,20 +1,17 @@
-
-
-
 export const VENDOR_STATUS = [
           {
                     "type_id": "ACTIVE",
-                    "type_name": "ACTIVE",
+                    "type_name": "Active",
                     "type_color": "#3DBC59"
           },
           {
                     "type_id": "INACTIVE",
-                    "type_name": "INACTIVE",
+                    "type_name": "Inactive",
                     "type_color": "#B13028"
           },
           {
                     "type_id": "INORDER",
-                    "type_name": "INORDER",
+                    "type_name": "Inorder",
                     "type_color": "#2374DB"
           }
 ];
@@ -22,34 +19,24 @@ export const VENDOR_STATUS = [
 export const ORDER_STATUS = [
           {
                     "type_id": 0,
-                    "type_name": "UNPROCESSED",
+                    "type_name": "Unprocessed",
                     "type_color": "#333333"
           },
           {
                     "type_id": 1,
-                    "type_name": "PROCESSING",
+                    "type_name": "Processing",
                     "type_color": "#444444"
           },
           {
                     "type_id": 2,
-                    "type_name": "COMPLETED",
-                    "type_color": "#555555"
+                    "type_name": "Completed",
+                    "type_color": "#1E64B4"
           },
           {
                     "type_id": 3,
-                    "type_name": "CANCELLED",
+                    "type_name": "Cancelled",
                     "type_color": "#666666"
           },
-         //  {
-         //            "type_id": 4,
-         //            "type_name": "REJECTED",
-         //            "type_color": "#777777"
-         //  },
-         //  {
-         //            "type_id": 5,
-         //            "type_name": "SUSPENDING",
-         //            "type_color": "#888888"
-         //  }
 ];
 
 export const ORDER_MATERIAL_STATUS = [
@@ -69,3 +56,9 @@ export const ORDER_MATERIAL_STATUS = [
                     "type_color": "#222222"
           }
 ];
+
+export const ROLES = {
+            ADM: 'ADM',
+            PUD: 'PUD',
+            IND: 'IND',
+}

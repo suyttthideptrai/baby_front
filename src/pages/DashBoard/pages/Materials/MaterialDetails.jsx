@@ -3,7 +3,7 @@ import propTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import XIcon from '../../../../assets/icons/crud/x_icon.svg'
 import DataItem from '../../../../components/DataItem'
-import { formatCurrency, formatMaterialQuantity } from '../../../../utils/utils'
+import { formatCurrency, formatMaterialQuantity, convertISOToDate } from '../../../../utils/utils'
 
 const MaterialDetails = ({ data, exit }) => {
   let warehouseDate = null;
@@ -27,7 +27,7 @@ const MaterialDetails = ({ data, exit }) => {
 
   return (
     <div className='p-1 h-auto bg-primary font-inter'>
-      <div className='flex h-8 text-white place-content-between'>
+      <div className='flex h-8 text-white items-center place-content-between font-bold'>
         <span>
           Material Details
         </span>
@@ -71,8 +71,8 @@ const MaterialDetails = ({ data, exit }) => {
           /> 
         <DataItem 
           label="Warehouse Date" 
-          value={formattedWarehouseDate}
-          type="date"
+          value={convertISOToDate(formattedWarehouseDate)}
+          type="text"
           editable={false}
           viewOnly={true}
 

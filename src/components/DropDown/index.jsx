@@ -26,7 +26,7 @@ const Dropdown = ({ options, selectedOption, onChange, editable }) => {
     );
   } else {
     return (
-      <div className='flex border-2 bg-hover2 rounded-lg pr-8 pl-1 cursor-not-allowed h-10 items-center w-auto'>
+      <div className='flex border-2 bg-hover2 rounded-lg px-5 cursor-not-allowed h-10 items-center w-auto'>
         <Status status={options.find((option) => option.type_id === selectedOption)?.type_name} />
       </div>
     );

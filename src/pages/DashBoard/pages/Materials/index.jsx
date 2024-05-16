@@ -22,8 +22,8 @@ import CreateExport from './CreateExport';
 
 import deleteIcon from '../../../../assets/icons/crud/delete_icon.svg'
 import editIcon from '../../../../assets/icons/crud/edit_icon.svg'
-import addIcon from '../../../../assets/icons/crud/add_icon.svg'
-import exportIcon from '../../../../assets/icons/crud/export_icon.svg'
+import exportIcon from '../../../../assets/icons/crud/export_button_icon.svg'
+import SearchBar from '../../../../components/SearchBar';
 
 
 
@@ -122,7 +122,7 @@ const MaterialsPage
 
   // EXPORT MATERIALS
   const toggleShowExportForm = () => {
-    dispatch(setModalWidth('w-[72%]'));
+    dispatch(setModalWidth('w-[52%]'));
     dispatch(setModalContent(
       <CreateExport exit={toggleHideExportForm} />
     ))
@@ -133,6 +133,7 @@ const MaterialsPage
     dispatch(setShowModal(false));
     dispatch(setModalContent(null));
     dispatch(setModalWidth('w-[10%]'));
+    dispatch(fetchAllMaterials());
   }
 
   return (

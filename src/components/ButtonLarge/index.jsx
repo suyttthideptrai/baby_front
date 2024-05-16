@@ -8,7 +8,8 @@ function ButtonLarge(props) {
   return (
     <div className=' 
     hover:bg-[#525252]
-    duration-300
+    hover:scale-110
+    duration-500
     shadow-[0px_8px_21px_0px_rgba(0,0,0,0.16)]
     rounded-[16px]
     bg-[#0A66C2]
@@ -24,8 +25,8 @@ function ButtonLarge(props) {
         <button onDoubleClick={onClick} className=" break-words
           font-poppins
           font-bold
-          text-[12px]
-          text-[#FFFFFF]" >
+          text-sm
+          text-[#FFFFFF] select-none" >
       {children}
     </button>
     </div>

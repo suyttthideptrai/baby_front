@@ -6,6 +6,7 @@ import dashboardSlice from './material/dashboardSlice';
 import AuthSlice from './auth';
 import modalSlices from './modalSlices';
 import orderSlice from './order/orderSlice';
+import receiptSlice from './receipt/receiptSlice'
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +17,15 @@ export const store = configureStore({
     dashboard: dashboardSlice,
     modal: modalSlices,
     orders: orderSlice,
+    receipt: receiptSlice
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['modal/setModalContent'],
+        ignoredPaths: ['modal.modalContent'],
+      },
+    }),
 })
 
 export default store;

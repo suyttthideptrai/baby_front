@@ -6,7 +6,9 @@ import SearchBar from '../../../../components/SearchBar'
 import { useDispatch, useSelector } from 'react-redux'
 
 import XIcon from '../../../../assets/icons/crud/x_icon.svg'
+import exportIcon from '../../../../assets/icons/crud/export_icon.svg'
 import { createExport } from '../../../../redux/material/MaterialSlice'
+import { HeaderButton } from '../../../../components/ModuleHeader'
 
 
 const CreateExport = ({exit}) => {
@@ -28,22 +30,67 @@ const CreateExport = ({exit}) => {
       entity_vendor_name: "",
    };
    const [materialData, setMaterialData] = useState(initialData);
-   const [exportData, setExportData] = useState([]);
+   const [exportData, setExportData] = useState({
+      material_quantities: {}
+   });
+   const [quantity, setQuantity] = useState(1);
 
    const handleExit = () => {
       exit();
    }
 
    const handleChange = (e) => {
-      setExportData({
-         ...exportData,
-         [e.target.name]: e.target.value,
-      });
+      const val = e.target.value;
+      const name = e.target.name;
+      if(val.includes('-')){
+         setQuantity(1);
+         setExportData(prevExportData => ({
+            ...prevExportData,
+            material_quantities: {
+               ...prevExportData.material_quantities,
+               [name]: 1,
+            }
+         }));
+         return;
+      }
+      if(val > materialData.entity_quantity){
+         setQuantity(materialData.entity_quantity);
+         setExportData(prevExportData => ({
+            ...prevExportData,
+            material_quantities: {
+               ...prevExportData.material_quantities,
+               [name]: materialData.entity_quantity,
+            }
+         }));
+         return;
+      }
+      setQuantity(parseInt(val));
+      setExportData(prevExportData => ({
+         ...prevExportData,
+         material_quantities: {
+            ...prevExportData.material_quantities,
+            [name]: val,
+         }
+      }));
    };
 
-   const handleSubmit = (e) => {
-      e.preventDefault();
-      dispatch(createExport(exportData));
+   const handleSubmit = async () => {
+      if(materialData.entity_quantity < 0){
+         alert('Illegal quantity!, Please choose another material! ');
+         return;
+      }
+      if(isNaN(quantity) || quantity < 1){
+         alert('Quantity must be at least 1');
+         return;
+      }
+      if(materialData.entity_id === ""){
+         alert('You must find a material first!');
+      }else{
+            const respond = await dispatch(createExport(exportData));
+            console.log(respond);
+            alert('Exported successfully!');
+            exit();
+      }
    };
 
    const onSelectSuggestion = (suggestion) => {
@@ -59,6 +106,7 @@ const CreateExport = ({exit}) => {
             <img className='h-6 cursor-pointer' onDoubleClick={handleExit} src={XIcon} alt="" />
          </div>
          <div className='bg-white flex place-content-around space-x-2 p-10'>
+            {/* {JSON.stringify(exportData) + quantity} */}
             <div>
                <DataItem 
                   label="Material ID" 
@@ -66,8 +114,8 @@ const CreateExport = ({exit}) => {
                   type="text"
                   viewOnly={true}
                />
-               <div className='flex'>
-                  <span>
+               <div className='flex items-center'>
+                  <span className='font-bold'>
                      Material Name: 
                   </span>
                   <SearchBar 
@@ -95,19 +143,32 @@ const CreateExport = ({exit}) => {
                   viewOnly={true}
                />
             </div>
-            <div>
+            <div className='flex-col place-content-between'>
                <DataItem 
                   label="Unit of Measure" 
                   value={materialData.entity_unit_of_measure}
                   type="text"
                   viewOnly={true}
                />
-               <DataItem 
-                  label="Quantity" 
-                  value={materialData.export_id}
-                  type="text"
-                  editable={true}
-               />
+               <div className='flex place-content-start'>
+                  <span className='font-bold'>
+                     Quantity:
+                  </span>
+                  <span className='w-4'>
+                  </span>
+                  <input
+                     label="Quantity" 
+                     name={materialData.entity_id}
+                     value={quantity}
+                     type="number"
+                     onChange={(e) => handleChange(e)}
+                     className='w-6 rounded-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+                  />
+                  <span>/ {materialData.entity_quantity}</span>
+               </div>
+               <div className='w-full p-2 flex place-content-between'>
+               <div></div> <HeaderButton title='Export' onClick={handleSubmit} icon={exportIcon} />
+               </div>
             </div>
          </div>
       </div>

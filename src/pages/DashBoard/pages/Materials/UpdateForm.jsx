@@ -8,6 +8,8 @@ import { updateMaterial, fetchAllMaterials } from '../../../../redux/material/Ma
 import { removeSelectedMaterial } from '../../../../redux/material/selectedIdsSlice';
 import { formatMaterialQuantity } from '../../../../utils/utils';
 import { setShowModal, setModalContent } from '../../../../redux/modalSlices';
+import { HeaderButton } from '../../../../components/ModuleHeader';
+import SaveIcon from '../../../../assets/icons/crud/save_icon.svg'
 
 const UpdateForm = ({ exit }) => {
     const dispatch = useDispatch();
@@ -93,7 +95,6 @@ const UpdateForm = ({ exit }) => {
             alert("Error updating material. Please re-login and try again.");
             return;
         }
-        e.preventDefault();
         const actionResult = await dispatch(updateMaterial(selectedMaterial));
         const isRejected = updateMaterial.rejected.match(actionResult);
         const isFulfilled = updateMaterial.fulfilled.match(actionResult);
@@ -174,7 +175,13 @@ const UpdateForm = ({ exit }) => {
                         />
                         <div className='flex place-content-between'>
                             <label className=''>Material Group : </label>
-                            <Dropdown options={types} selectedOption={selectedMaterial.material_type} onChange={handleDropdownChange} />
+                            <Dropdown 
+                            options={types} 
+                            selectedOption={selectedMaterial.material_type} 
+                            //onChange={handleDropdownChange} 
+                            editable={false}
+                            />
+                            <div className='w-2'></div>
                         </div>
                         <DataItem
                             label="Vendor "
@@ -221,19 +228,21 @@ const UpdateForm = ({ exit }) => {
                         />
                     </div>
                 </div>
-                <div className='flex justify-end'>
-                    <button className='
+                <div className='flex justify-end px-10'>
+                    {/* <button className='
                     p-3 
-                    rounded-lg 
+                    rounded-xl 
                     bg-secondary
                     hover:bg-hover2
+                    hover:rounded-md 
                     cursor-pointer 
                     duration-200 
                     mr-20
                     ' onDoubleClick={handleUpdateButton}
                     >
                         Save Changes
-                    </button>
+                    </button> */}
+                    <HeaderButton title='Save' icon={SaveIcon} onClick={handleUpdateButton} />
                 </div>
             </div>
         </div>

@@ -133,6 +133,7 @@ const CreateOrder = () => {
          await dispatch(createOrder(newOrderData));
          setNewOrderData(initialState);
          await dispatch(fetchOrders());
+         alert('Order created successfully!')
          navigate('/orders');
       }
    }
@@ -213,7 +214,7 @@ const CreateOrder = () => {
             </div>
          </div>
          <div>
-            <div>
+            <div className='w-[30%] pl-5 pt-3'>
                {
                   (selectedVendor !== null) && 
                   (
@@ -236,7 +237,6 @@ const CreateOrder = () => {
                      <th className='w-[15%]'>Unit of Measure</th>
                      <th className='w-[15%]'>Quantity</th>
                      <th className='w-[20%]'>Unit Price (VND)</th>
-                     {/* <th>Status</th> */}
                   </tr>
                   </thead>
                   <tbody>
@@ -257,7 +257,7 @@ const CreateOrder = () => {
                         <hr />
                      )
                   }
-                  {typeof (selectedVendorMaterials) === 'object' ? selectedVendorMaterials.map((data, index) => (
+                  {selectedVendorMaterials?.length > 0 ? selectedVendorMaterials.map((data, index) => (
                      <Row 
                         key={data.entity_id} 
                         data={data} 
@@ -267,7 +267,7 @@ const CreateOrder = () => {
                      />
                   ))
                      :
-                     'nodata'}
+                     'nothing found!'}
                   </tbody>
                </table>
             </div>

@@ -1,25 +1,75 @@
-import React, {useState, useEffect} from 'react'
+import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
-import Header from '../../../../../components/ModuleHeader'
+import Header, { HeaderButton } from '../../../../../components/ModuleHeader'
 import DataItem from '../../../../../components/DataItem'
 import Dropdown from '../../../../../components/DropDown'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchOrderDetails } from '../../../../../redux/order/orderSlice'
 import { ORDER_STATUS } from '../../../../../utils/constant'
 import DetailsTable from './DetailsTable'
 import { formatCurrency, convertISOToDate } from '../../../../../utils/utils'
+import exportIcon from '../../../../../assets/icons/crud/export_button_icon.svg'
+
+import {
+  setShowModal, setModalContent, setModalWidth, setModalRounded
+} from '../../../../../redux/modalSlices';
+import ExportReceipt from './ExportReceipt'
+import StatusCell from '../../../../../components/StatusCell'
 
 const OrderDetailsCreate = () => {
   const dispatch = useDispatch();
   const detailsData = useSelector(state => state.orders.orderDetails);
   const detailsId = useSelector(state => state.orders.detailsId);
+  const navigate = useNavigate();
   useEffect(() => {
     if(detailsId !== null){
       dispatch(fetchOrderDetails(detailsId));
+    }else{
+      navigate('/orders');
     }
-  }, [dispatch, detailsId])
+  }, [detailsId])
+
+  const showExportGR = () => {
+    if(checkQuantities(detailsData) === true){
+      alert('All items have been received');
+      return;
+    }
+    dispatch(setModalContent(
+      <ExportReceipt 
+        initialData={detailsData} 
+        onLeave={hideExportGR}
+      />
+    ));
+    dispatch(setShowModal(true));
+    dispatch(setModalWidth('w-2/3'));
+    dispatch(setModalRounded(false));
+  }
+
+  const hideExportGR = () => {
+    dispatch(fetchOrderDetails(detailsId));
+    dispatch(setShowModal(false));
+    dispatch(setModalContent(null));
+    dispatch(setModalWidth('w-[10%]'));
+  }
+
+  function checkQuantities(data) {
+    if (!data || !Array.isArray(data.order_materials)) {
+      return false;
+    }
+  
+    let totalQuantity = 0;
+    let totalActualQuantity = 0;
+  
+    for (const material of data.order_materials) {
+      totalQuantity += material.material_quantity;
+      totalActualQuantity += material.material_actual_quantity;
+    }
+  
+    return totalQuantity === totalActualQuantity;
+  }
+
   return (
     <div>
           <Header title={                
@@ -27,7 +77,9 @@ const OrderDetailsCreate = () => {
               <Link className='hover:underline' to={'/orders'}>{"Purchase Orders "}</Link>
                 / <span className='font-light'> {detailsData.order_title}</span>               
             </span>
-          } />
+          }>
+            <HeaderButton title='Export GR' icon={exportIcon} onClick={showExportGR} />
+          </Header>
           {
             /*
               ORDER DETAILS SECTION
@@ -96,14 +148,18 @@ const OrderDetailsCreate = () => {
                 // editable={editable}
                 // viewOnly={!editable}
                 /> 
-              <div className='flex place-content-between transition-all duration-200 ease-in-out'>
-                <label className='min-w-40'>Status:</label>
-                <Dropdown 
-                options={ORDER_STATUS} 
-                editable={false}
-                selectedOption={detailsData.order_status}  
-                // onChange={handleDropdownChange} 
-                />
+              <div className='flex items-center place-content-between w-auto'>
+                <label className='w-auto font-bold'>Status:</label>
+                <div className=' w-1/2 h-full'>
+                  <StatusCell 
+                    isRounded={true}
+                    statusData={ORDER_STATUS}
+                    statusCode={detailsData.order_status}
+                  />
+                </div>
+                <div className='w-2'>
+
+                </div>
               </div>
               <DataItem 
                 label="Vendor ID" 

@@ -3,8 +3,11 @@ import axios from 'axios';
 import { getRequestHeaderWithBearerToken } from '../../utils/utils';
 const API_PREFIX = import.meta.env.VITE_APP_API_CRUD_URL + "/material";
 export const fetchAllMaterials = createAsyncThunk(
-  "fetchAllMaterials", async (_, { getState }) => {
+  "fetchAllMaterials", async (_, { rejectWithValue, getState }) => {
     const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
     const respond = await fetch(`${API_PREFIX}/all`,
     {
       method: 'GET',
@@ -18,8 +21,11 @@ export const fetchAllMaterials = createAsyncThunk(
 )
 
 export const fetchTypes= createAsyncThunk(
-  "fetchTypes", async (_, { getState }) => {
+  "fetchTypes", async (_, { rejectWithValue, getState }) => {
     const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
     const respond = await fetch(`${API_PREFIX}/type/all`,
     {
       method: 'GET',
@@ -35,8 +41,11 @@ export const fetchTypes= createAsyncThunk(
 
 export const updateMaterial = createAsyncThunk(
   'updateMaterial',
-  async (materialData, { getState, rejectWithValue }) => {
+  async (materialData, { getState, rejectWithValue }) => {   
     const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
     try {
       const response = await axios.put(
         `${API_PREFIX}/update`, 
@@ -63,7 +72,8 @@ export const addMaterial = createAsyncThunk(
         materialData,
         {
           headers: {
-            'Authorization': 'Bearer ' + token
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
           }
         }
       );
@@ -78,6 +88,30 @@ export const addMaterial = createAsyncThunk(
     }
   }
 );
+
+export const fetchExportHistory = createAsyncThunk(
+  "fetchExportHistory",
+  async (_, { getState, rejectWithValue }) => {
+    const token = getState().authentication.token;
+    if (!token) {
+      return rejectWithValue('Something went wrong please login again');
+    }
+    try {
+      const response = await fetch(`${API_PREFIX}/export/all`, {
+        method: 'GET',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        }
+      });
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching export history:', error);
+      return rejectWithValue('Error fetching export history. Please try again.');
+    }
+  }
+)
+
 
 export const createExport = createAsyncThunk(
   "createExport",
@@ -114,6 +148,7 @@ export const MaterialSlice = createSlice({
     showUpdateForm: false,
     showCreateMaterialForm: false,
     types: [],
+    exports: [],
     isLoading: false,
     error: null,
     message: null
@@ -179,6 +214,20 @@ export const MaterialSlice = createSlice({
       state.isLoading = false;
       state.error = true;
       state.message = action.payload.message;
+    });
+    builder.addCase(fetchExportHistory.pending, (state) => {
+      state.isLoading = true;
+      state.message = "fetching export history ..";
+    });
+    builder.addCase(fetchExportHistory.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.exports = action.payload;
+      state.message = "export history fetched";
+    });
+    builder.addCase(fetchExportHistory.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = true;
+      state.message = action.payload;
     });
   }
 });
