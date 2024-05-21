@@ -4,12 +4,14 @@ import { fetchAllMaterials, fetchTypes
 import { 
   deleteMaterials
   , clearIds
-  , setSelectedMaterial } from '../../../../redux/material/selectedIdsSlice';
+  , setSelectedMaterial,
+} from '../../../../redux/material/selectedIdsSlice';
 import { 
   setShowModal,
   setModalContent,
-  setModalHeight,
-  setModalWidth
+  setModalWidth,
+  clearModal,
+  setModalRounded
  } from '../../../../redux/modalSlices';
 import React, { useEffect, useState } from 'react'
 import DeleteConfirmation from '../../../../components/DeleteConfirmation/DeleteConfirmation';
@@ -23,17 +25,15 @@ import CreateExport from './CreateExport';
 import deleteIcon from '../../../../assets/icons/crud/delete_icon.svg'
 import editIcon from '../../../../assets/icons/crud/edit_icon.svg'
 import exportIcon from '../../../../assets/icons/crud/export_button_icon.svg'
-import SearchBar from '../../../../components/SearchBar';
 
 
 
 const MaterialsPage
  = () => {
   const dispatch = useDispatch();
-  const materials = useSelector(state => state.materials);
-  const idsToDelete = useSelector(state => state.selectedIds)
+  const materials = useSelector(state => state.materials.materials);
+  const selectedMaterialIds = useSelector(state => state.selectedIds)
   const [message, setMessage] = useState("");
-  const [showExport, setShowExport] = useState(false);
 
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const MaterialsPage
   //DELETE SECTION
   const handleDelete = () => {
     try {
-      dispatch(deleteMaterials(idsToDelete));
+      dispatch(deleteMaterials(selectedMaterialIds));
       dispatch(clearIds());
       window.alert('Deletion Successful!');
       handleSuccessRequest();
@@ -57,7 +57,7 @@ const MaterialsPage
   };
 
   const handleDeleteConfirmation = () => {
-    if(idsToDelete.selected_ids.length === 0) {
+    if(selectedMaterialIds.selected_ids.length === 0) {
       alert("Please select a material to delete");
       return;
     }
@@ -106,25 +106,43 @@ const MaterialsPage
   }
 
   const handleClickEdit = () => {
-    if(idsToDelete.selected_ids.length == 0){
+    if(selectedMaterialIds.selected_ids.length == 0){
       alert('Please choose one checkbox whose material you want to modify');
       return;
     }
-    if(idsToDelete.selected_ids.length > 1){
+    if(selectedMaterialIds.selected_ids.length > 1){
       alert('You can modify only one material at the same time');
       return;
     }
-    const id = idsToDelete.selected_ids[0];
+    const id = selectedMaterialIds.selected_ids[0];
     const data = materials.materials.find(item => item.material_id === id);
     dispatch(setSelectedMaterial(data));
     toggleShowUpdateForm();
   }
 
   // EXPORT MATERIALS
+
   const toggleShowExportForm = () => {
-    dispatch(setModalWidth('w-[52%]'));
+    if(selectedMaterialIds.selected_ids.length === 0){
+      alert('Please select at least one material to export');
+      return;
+    }
+    dispatch(setModalWidth('w-[72%]'));
+    for(let id of selectedMaterialIds.selected_ids){
+      const data = materials.find(item => item.material_id === id);
+      if(data.material_quantity < 0){
+        alert('There a material which quantity isn\'t valid, please choose another material');
+        return;
+      }
+    }
+    const initialData = materials.filter(item => selectedMaterialIds.selected_ids.includes(item.material_id))
+    console.log(initialData)
+    dispatch(setModalRounded(false));
     dispatch(setModalContent(
-      <CreateExport exit={toggleHideExportForm} />
+      <CreateExport 
+      exit={toggleHideExportForm} 
+      initialData={initialData}
+      />
     ))
     dispatch(setShowModal(true));
   }
@@ -147,7 +165,7 @@ const MaterialsPage
         </Header>
       </div>
       {
-        // JSON.stringify(idsToDelete) +
+        // JSON.stringify(selectedMaterialIds.selected_ids) 
         // " add form " + JSON.stringify(showCreateMaterialState) +
         // " details " + JSON.stringify(showDetailsState) +
         // " update form " + JSON.stringify(showUpdateMaterialState)
@@ -170,7 +188,7 @@ const MaterialsPage
         materials
         ?
         <div className='mt-2 w-full'>
-          <Table initialData={materials.materials} />
+          <Table initialData={materials} />
         </div>
         : 
         <StatusMessage message={message}/>

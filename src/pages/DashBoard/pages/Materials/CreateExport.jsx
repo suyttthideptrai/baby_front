@@ -12,54 +12,39 @@ import minusIcon from '../../../../assets/icons/crud/minus_icon.svg'
 import plusIcon from '../../../../assets/icons/crud/plus_icon.svg'
 
 
-const CreateExport = ({exit, initialData}) => {
-   const materialQuantities = initialData.order_materials.reduce((acc, material) => {
-      acc[material.material_id] = 1;
+const CreateExport = ({ exit, initialData }) => {
+   // const materialIds = useSelector(state => state.selectedIds.selected_ids);
+   
+   const dispatch = useDispatch();
+   const [materialQuantities, setMaterialQuantities] = useState(initialData.reduce((acc, material) => {
+      acc[material.material_id] = 0;
       return acc;
-    }, {});
-   const [requestBody, setRequestBody] = useState({
-      order_id: initialData.order_id,
-      material_quantities: materialQuantities
-   });
-   const [totalQuantity, setTotalQuantity] = useState(0);
-   const [totalReceiptMoney, setTotalReceiptMoney] = useState(0);
-   const onChangeQuantity = (material_id, newQuantity) => {
-      setRequestBody(prevState => ({
+    }, {}));
+
+    const [totalQuantity, setTotalQuantity] = useState(0);
+   
+    const onChangeQuantity = (material_id, newQuantity) => {
+      setMaterialQuantities(prevState => ({
         ...prevState,
-        material_quantities: {
-          ...prevState.material_quantities,
-          [material_id]: newQuantity
-        }
+        [material_id]: newQuantity
       }));
     };
 
-   useEffect(() => {
-   let newTotalCost = 0;
-   let newTotalItems = 0;
-   
-   for (const material_id in requestBody.material_quantities) {
-      const quantity = requestBody.material_quantities[material_id];
-      const material = initialData.order_materials.find(material => material.material_id === material_id);
-      if (material) {
-         newTotalCost += material.material_price_per_unit * quantity;
-      }
-      newTotalItems += quantity;
-   }
-   
-   setTotalReceiptMoney(newTotalCost);
-   setTotalQuantity(newTotalItems);
-   }, [requestBody.material_quantities]);
+    useEffect(() => {
+      setTotalQuantity(Object.values(materialQuantities).reduce((acc, quantity) => acc + quantity, 0));
+   }, [materialQuantities]);
 
-   const dispatch = useDispatch();
 
    const handleExport = async () => {
       if(totalQuantity === 0){
          alert('At least 1 item must be exported!');
          return;
       }
-      await dispatch(exportGR(requestBody));
+      await dispatch(createExport({
+         material_quantities: materialQuantities
+      }));
       alert('Exported successfully!');
-      onLeave();
+      handleExit();
    }
    
 
@@ -67,63 +52,64 @@ const CreateExport = ({exit, initialData}) => {
       exit();
    }
 
-   const handleChange = (e) => {
-      const val = e.target.value;
-      const name = e.target.name;
-      if(val.includes('-')){
-         setQuantity(1);
-         setExportData(prevExportData => ({
-            ...prevExportData,
-            material_quantities: {
-               ...prevExportData.material_quantities,
-               [name]: 1,
-            }
-         }));
-         return;
-      }
-      if(val > materialData.entity_quantity){
-         setQuantity(materialData.entity_quantity);
-         setExportData(prevExportData => ({
-            ...prevExportData,
-            material_quantities: {
-               ...prevExportData.material_quantities,
-               [name]: materialData.entity_quantity,
-            }
-         }));
-         return;
-      }
-      setQuantity(parseInt(val));
-      setExportData(prevExportData => ({
-         ...prevExportData,
-         material_quantities: {
-            ...prevExportData.material_quantities,
-            [name]: val,
-         }
-      }));
-   };
+   // const handleInputChange = (e, material_id) => {
+   //    const newQuantity = parseInt(e.target.value, 10);
+   //    onChangeQuantity(material_id, newQuantity);
+   //  };
 
-   const handleSubmit = async () => {
-      if(materialData.entity_quantity < 0){
-         alert('Illegal quantity!, Please choose another material! ');
-         return;
-      }
-      if(isNaN(quantity) || quantity < 1){
-         alert('Quantity must be at least 1');
-         return;
-      }
-      if(materialData.entity_id === ""){
-         alert('You must find a material first!');
-      }else{
-            const respond = await dispatch(createExport(exportData));
-            console.log(respond);
-            alert('Exported successfully!');
-            exit();
-      }
-   };
+   // const handleChange = (e) => {
+   //    const val = e.target.value;
+   //    const name = e.target.name;
+   //    if(val.includes('-')){
+   //       setQuantity(1);
+   //       setExportData(prevExportData => ({
+   //          ...prevExportData,
+   //          material_quantities: {
+   //             ...prevExportData.material_quantities,
+   //             [name]: 1,
+   //          }
+   //       }));
+   //       return;
+   //    }
+   //    if(val > materialData.entity_quantity){
+   //       setQuantity(materialData.entity_quantity);
+   //       setExportData(prevExportData => ({
+   //          ...prevExportData,
+   //          material_quantities: {
+   //             ...prevExportData.material_quantities,
+   //             [name]: materialData.entity_quantity,
+   //          }
+   //       }));
+   //       return;
+   //    }
+   //    setQuantity(parseInt(val));
+   //    setExportData(prevExportData => ({
+   //       ...prevExportData,
+   //       material_quantities: {
+   //          ...prevExportData.material_quantities,
+   //          [name]: val,
+   //       }
+   //    }));
+   // };
 
-   const onSelectSuggestion = (suggestion) => {
-         setMaterialData(suggestion);
-   }
+   // const handleSubmit = async () => {
+   //    if(materialData.entity_quantity < 0){
+   //       alert('Illegal quantity!, Please choose another material! ');
+   //       return;
+   //    }
+   //    if(isNaN(quantity) || quantity < 1){
+   //       alert('Quantity must be at least 1');
+   //       return;
+   //    }
+   //    if(materialData.entity_id === ""){
+   //       alert('You must find a material first!');
+   //    }else{
+   //          const respond = await dispatch(createExport(exportData));
+   //          console.log(respond);
+   //          alert('Exported successfully!');
+   //          exit();
+   //    }
+   // };
 
   return (
    <div className='bg-secondary rounded-none'>
@@ -133,58 +119,22 @@ const CreateExport = ({exit, initialData}) => {
       </div>
       <img 
          className='w-6 h-6 cursor-pointer hover:scale-150 transition-all duration-200 ease-in-out'
-      src={xIcon} alt="leave" onDoubleClick={onLeave} />
+      src={xIcon} alt="leave" onDoubleClick={handleExit} />
    </div>
-   {/* {
-       JSON.stringify(initialData)
-   } */}
    {
-         initialData ?
+       JSON.stringify(materialQuantities)
+   }
+   {
+         materialQuantities ?
          <div className='flex place-content-between p-5 text-lg border-b-2 border-black mx-5 font-alata'>
            <div className='column flex-col space-y-2'>
              <DataItem 
-             label="Purchase Order ID" 
-             value={initialData.order_id}
+             label="Export Date" 
+             value={convertISOToDate(new Date())}  
              type="text"
              viewOnly={true}
              /> 
-             <DataItem 
-             label="Order Date" 
-             name="order_issued_date"
-             value={convertISOToDate(initialData.order_issued_date)}
-             type="text"
-             viewOnly={true}
-             /> 
-             <DataItem 
-             label="Due Date" 
-             value={initialData.order_delivery_date === null ? 'Not Given' : convertISOToDate(initialData.order_delivery_date)}
-             type="text"
-             viewOnly={true}
-             /> 
-           </div>
-
-           <div className='column flex-col space-y-2'>
-           <DataItem 
-             label="Vendor ID" 
-             name="vendor_address"
-             value={initialData.order_vendor_id}
-             type="text"
-             viewOnly={true}
-             /> 
-           <DataItem 
-             label="Total (VND)" 
-             value={formatCurrency(totalReceiptMoney)}
-             type="text"
-             viewOnly={true}
-             /> 
-           <DataItem 
-             label="Total Items"  
-             value={totalQuantity}
-             type="text"
-             viewOnly={true}
-             /> 
-           
-           </div>
+             </div>
          </div> 
          :
          <div>
@@ -201,25 +151,24 @@ const CreateExport = ({exit, initialData}) => {
                <th className=''>Material ID</th>
                <th className='w-[10%] text-center items-center'>Quantity</th>
                <th className='w-[15%]'>Unit of Measure</th>
-               <th className='w-[20%]'>Unit Price (VND)</th>
-               <th className=''>Total Amount</th>
+               <th className='w-[20%]'>Group Material</th>
+               <th className=''>Vendor</th>
                {/* <th>Status</th> */}
             </tr>
             </thead>
             <tbody>
-            {typeof (initialData) === 'object' ? initialData.order_materials.map((data, index) => (
-               <Row 
-                  key={data.entity_id} 
-                  data={data} 
-                  index={index + 1}
-                  onChangeQuantity={onChangeQuantity}
-               />
-            ))
-               :
-               'nodata'}
-               {/* {
-                  JSON.stringify(initialData)
-               } */}
+               {Array.isArray(initialData) ? (
+               initialData.map((data, index) => (
+                  <Row
+                     key={data.material_id}
+                     data={data}
+                     index={index + 1}
+                     onChangeQuantity={onChangeQuantity}
+                  />
+               ))
+               ) : (
+               <div>No data available</div>
+               )}
             </tbody>
          </table>
       </div>
@@ -236,15 +185,21 @@ const CreateExport = ({exit, initialData}) => {
 }
 
 CreateExport.propTypes = {
-   exit: PropTypes.func
+   exit: PropTypes.func,
+   initialData: PropTypes.array
 }
 
 export default CreateExport
 
 const Row = ({ data, index, onChangeQuantity }) => {
+   const materialTypes = useSelector(state => state.materials.types);
+   const getMaterialGroupName = (groupId) => {
+      const materialGroup = materialTypes.find(group => group.type_id === groupId);
+      return materialGroup ? materialGroup.type_name.trim() : 'Unknown';
+    };
    const id = data.material_id;
-   const quantityCapacity = data.material_quantity - data.material_actual_quantity;
-   const [quantity, setQuantity] = useState(1);
+   const quantityCapacity = data.material_quantity;
+   const [quantity, setQuantity] = useState(0);
    const handleChangeQuantity = (e) => {
       let value = e.target.value;
       if (value.includes('-')) {
@@ -308,8 +263,8 @@ const Row = ({ data, index, onChangeQuantity }) => {
             <img onClick={increment} src={plusIcon} alt="plus" className='w-4 h-4 cursor-pointer hover:bg-hover1 duration-200 rounded-sm' />
          </td>
          <td className="text-center">{data.material_unit_of_measure}</td>     
-         <td className="text-center p-3">{formatCurrency(data.material_price_per_unit)}</td>
-         <td className='text-center'>{formatCurrency(quantity * data.material_price_per_unit)}</td>
+         <td className="text-center p-3">{getMaterialGroupName(data.material_type)}</td>
+         <td className='text-center'>{data.material_vendor_name}</td>
       </tr>
    );
 };

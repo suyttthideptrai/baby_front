@@ -25,8 +25,23 @@ const modalSlice = createSlice({
                     setModalHeight: (state, action) => {
                               state.modalHeight = action.payload;
                     },
+                    clearModal: (state) => {
+                              state.showModal = false;
+                              state.modalContent = null;
+                              state.modalWidth = 'w-[10%]';
+                              state.modalHeight = null;
+                              state.modalRounded = false;
+                       
+                  }
           },
 });
 
-export const { setShowModal, setModalContent, setModalWidth, setModalHeight, setModalRounded } = modalSlice.actions;
+export const { 
+   setShowModal, 
+   setModalContent, 
+   setModalWidth, 
+   setModalHeight, 
+   setModalRounded, 
+   clearModal
+} = modalSlice.actions;
 export default modalSlice.reducer;
