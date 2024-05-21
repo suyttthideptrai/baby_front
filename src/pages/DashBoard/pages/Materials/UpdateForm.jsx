@@ -99,8 +99,10 @@ const UpdateForm = ({ exit }) => {
         const isRejected = updateMaterial.rejected.match(actionResult);
         const isFulfilled = updateMaterial.fulfilled.match(actionResult);
 
+        console.log(actionResult);
+
         if (isFulfilled) {
-            alert("Update Success!");
+            alert("Successfully updated!");
             success();
         } else if (isRejected) {
             // Check the status code and display an appropriate alert
@@ -178,8 +180,8 @@ const UpdateForm = ({ exit }) => {
                             <Dropdown 
                             options={types} 
                             selectedOption={selectedMaterial.material_type} 
-                            //onChange={handleDropdownChange} 
-                            editable={false}
+                            onChange={handleDropdownChange} 
+                            editable={true}
                             />
                             <div className='w-2'></div>
                         </div>

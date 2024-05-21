@@ -5,6 +5,7 @@ import propTypes from 'prop-types'
 import UIcon from '../../../../../assets/icons/crud/edit_icon.svg'
 import AIcon from '../../../../../assets/icons/crud/add_icon.svg'
 import DIcon from '../../../../../assets/icons/crud/delete_icon.svg'
+import SaveIcon from '../../../../../assets/icons/crud/save_icon.svg'
 
 
 import DataItem from '../../../../../components/DataItem'
@@ -41,6 +42,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import DeleteConfirmation from '../../../../../components/DeleteConfirmation/DeleteConfirmation'
 import { VENDOR_STATUS } from '../../../../../utils/constant'
+import { formatCurrency } from '../../../../../utils/utils'
+import { Save } from 'react-feather'
 
 const VendorDetails = () => {
   const dispatch = useDispatch();
@@ -164,8 +167,8 @@ const VendorDetails = () => {
       await dispatch(updateVendor(updatedData));
       dispatch(fetchAllVendors());
       alert("Vendor updated successfully!")
-      dispatch(removeVendorDetailsContent());
       navigate('/vendors');
+      dispatch(removeVendorDetailsContent());
     }catch(e){
       alert("Something went wrong while updating vendor " + e.message);
     }
@@ -226,7 +229,7 @@ const VendorDetails = () => {
           <Link className='hover:underline' to={'/vendors'}>{"Vendor List"}</Link> / <span className='font-light'>{thisVendorDetails.vendor_name}</span>
         </span>
       }>
-        <HeaderButton title={editable ? "Save Changes" : "Edit"} icon={UIcon} css={"bg-secondary"} onClick={() => toggleEditSaveChangesVendor()}/>
+        <HeaderButton title={editable ? "Save Changes" : "Edit"} icon={editable ? SaveIcon : UIcon} css={"bg-secondary"} onClick={() => toggleEditSaveChangesVendor()}/>
       </Header>
       <div className={`transition-opacity duration-500 ${showMaterialDetailsState ? '' : 'opacity-0 pointer-events-none'}`}>
           {showMaterialDetailsState && (
@@ -296,15 +299,21 @@ const VendorDetails = () => {
           viewOnly={!editable}
           /> 
         </div>
-
+          {/* {JSON.stringify(updatedData)} */}
         <div className='column flex-col space-y-2 w-[30%]'>
           <div className='flex items-center place-content-between w-auto'>
                 <label className='w-auto font-bold'>Status:</label>
                 <div className=' w-1/3 h-full'>
-                  <StatusCell 
+                  {/* <StatusCell 
                     isRounded={true}
                     statusData={VENDOR_STATUS}
                     statusCode={updatedData.vendor_status}
+                  /> */}
+                  <Dropdown 
+                    options={VENDOR_STATUS}
+                    selectedOption={updatedData.vendor_status}
+                    onChange={handleDropdownChange}
+                    editable={editable}
                   />
                 </div>
                 <div className='w-1/3'>
@@ -319,7 +328,7 @@ const VendorDetails = () => {
           </div>
           <DataItem 
           label="Total order budget (VND)" 
-          value={"0"}
+          value={formatCurrency(updatedData.vendor_order_budget)}
           type="text"
           editable={false}
           viewOnly={!editable}
@@ -335,7 +344,7 @@ const VendorDetails = () => {
       <Header title="Supplied Products">
         {
           editable &&
-          <HeaderButton icon={AIcon} title={showAdding ? 'Save Change' : 'Add'} onClick={toggleShowAdding} />
+          <HeaderButton icon={showAdding ? SaveIcon : AIcon} title={showAdding ? 'Save' : 'Add'} onClick={toggleShowAdding} />
         }
         {
           editable &&

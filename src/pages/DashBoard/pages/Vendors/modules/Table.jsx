@@ -39,6 +39,7 @@ const Table = ({initialData}) => {
 
   return (
     <div className='w-full overflow-auto'>
+    
       <table className='table-auto w-full'>
         <thead className='tracking-wider'>
           <tr className='text-xl'>
@@ -121,7 +122,7 @@ const Row = ({ data }) => {
           <StatusCell 
             statusData={VENDOR_STATUS}
             statusCode={data.vendor_status}
-            isRounded={false}   
+            isRounded={false} 
           />
         </td>
       </tr>

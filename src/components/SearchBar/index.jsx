@@ -26,7 +26,6 @@ const SearchBar = ({
 
   useEffect(() => {
     if (typeof(query) === 'string' && query.trim() === '' && selfSuggest === true) {
-      console.log('query is empty')
       setSuggestions([]);
       return;
     }

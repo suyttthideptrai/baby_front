@@ -18,7 +18,7 @@ const ExportLog = props => {
       <table className='table-auto w-full font-alata'>
         <thead className='tracking-wider'>
           <tr className='text-xl'>
-            <th>Material ID</th>
+            <th className='text-left pl-10'>Material ID</th>
             <th>Material Name</th>
             <th>Quantity</th>
             <th>Export Date</th>
@@ -27,7 +27,7 @@ const ExportLog = props => {
         <tbody>
           {exportHistory.map((item, index) => (
             <tr key={index} className='tracking-wide text-gray-600 hover:text-black hover:cursor-pointer border-y-2'>
-              <td className='text-center p-3'>{item.material_id}</td>
+              <td className='text-left p-3 pl-10'>{item.material_id}</td>
               <td className='text-center p-3'>{item.material_name}</td>
               <td className='text-center p-3'>{item.material_quantity}</td>
               <td className='text-center p-3'>{convertISOToDateTime(item.material_export_date)}</td>

@@ -31,11 +31,11 @@ function DashBoardPage() {
   
   return (
     <BrowserRouter>
-        <div className='overflow-clip'>
+        <div className=''>
           <div className='items-start'>
               <TopBar toggleFunc={toggleSettingsVisibility} />
           </div>
-          <div className='flex'>
+          <div className='flex h-full'>
             <div className=''>
               <NavBar/>
             </div>

@@ -1,16 +1,16 @@
 export const VENDOR_STATUS = [
           {
-                    "type_id": "ACTIVE",
+                    "type_id": 0,
                     "type_name": "Active",
                     "type_color": "#3DBC59"
           },
           {
-                    "type_id": "INACTIVE",
+                    "type_id": 1,
                     "type_name": "Inactive",
                     "type_color": "#B13028"
           },
           {
-                    "type_id": "INORDER",
+                    "type_id": 2,
                     "type_name": "Inorder",
                     "type_color": "#2374DB"
           }

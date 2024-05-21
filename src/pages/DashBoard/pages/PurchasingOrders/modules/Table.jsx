@@ -63,7 +63,7 @@ const Table = ({ initialData }) => {
       <thead className='tracking-wider text-lg'>
         <tr>
           <th className='p-3 w-5'><input className='w-5 h-5'  type='checkbox' onChange={handleSelectAll} /></th>
-          <th className='w-[10%] text-center'>Order ID</th>
+          <th className='w-[10%] text-left'>Order ID</th>
           <th className='text-center'>Title</th>
           <th className='w-[15%] text-center'>Start Date</th>
           <th className='w-[15%] text-center'>Due Date</th>
@@ -109,7 +109,7 @@ const Row = ({ data, click, click2, check }) => {
          onChange={() => handleCheck(data.order_id)}
          />
       </td>
-      <td className='text-center text-black font-semibold hover:underline' onClick={handleClick}>{data.order_id}</td>
+      <td className='text-left text-black font-semibold hover:underline' onClick={handleClick}>{data.order_id}</td>
       <td onClick={handleClick} className='text-center'>{data.order_title}</td>
       <td className='text-center'>{convertISOToDate(data.order_date)}</td>
       <td className='text-center'>{data.order_due_date ? convertISOToDate(data.order_due_date) : 'N/A'}</td>

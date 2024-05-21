@@ -42,7 +42,7 @@ const Row = ({ data, index }) => {
       <td className='text-center'>{data.material_actual_quantity}</td>
       <td className='text-center'>{formatCurrency(data.material_price_per_unit)}</td>
       <td className='h-10 w-[15%]'>
-        <div className='px-5 h-full'>
+        <div className='px-2 h-full'>
           <StatusCell 
             statusData={ORDER_MATERIAL_STATUS} 
             isRounded={true} 

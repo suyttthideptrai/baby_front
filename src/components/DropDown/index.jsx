@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Status from '../../pages/DashBoard/pages/Vendors/modules/Status';
 import { getColor } from '../../utils/utils';
+import StatusCell from '../StatusCell';
 
 const Dropdown = ({ options, selectedOption, onChange, editable }) => {
     
@@ -13,12 +14,15 @@ const Dropdown = ({ options, selectedOption, onChange, editable }) => {
   if (editable) {
     return (
       <select
-        className={'border-2 bg-hover2 rounded-lg w-auto h-10 ' + getColor(selectedOption)}
+        className={'border-2 bg-hover2 pl-2 rounded-lg w-auto h-10 ' + getColor(selectedOption)}
         value={selectedOption}
         onChange={handleSelectChange}
       >
         {options.map((option) => (
-          <option key={option.type_id} value={option.type_id} className={getColor(option.type_name)}>
+          <option 
+          key={option.type_id} 
+          value={option.type_id} 
+          className={getColor(option.type_name)}>
             {option.type_name}
           </option>
         ))}
@@ -26,9 +30,14 @@ const Dropdown = ({ options, selectedOption, onChange, editable }) => {
     );
   } else {
     return (
-      <div className='flex border-2 bg-hover2 rounded-lg px-5 cursor-not-allowed h-10 items-center w-auto'>
-        <Status status={options.find((option) => option.type_id === selectedOption)?.type_name} />
-      </div>
+      // <div className='flex border-2 bg-hover2 rounded-lg px-5 cursor-not-allowed h-10 items-center w-auto'>
+      //   <Status status={options.find((option) => option.type_id === selectedOption)?.type_name} />
+      // </div>
+      <StatusCell 
+        isRounded={true} 
+        statusData={options} 
+        statusCode={selectedOption}
+      />
     );
   }
 };

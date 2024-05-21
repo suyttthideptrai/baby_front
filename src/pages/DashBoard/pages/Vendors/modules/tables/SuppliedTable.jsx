@@ -94,14 +94,7 @@ const SuppliedTable = ({ initialData, editable, showAdding, vendorId }) => {
           </tr>
         </thead>
         <tbody id="checkbox-container">
-          {initialData && initialData.map(item => (
-            <Row
-              key={item.entity_id}
-              data={item}
-              editable={editable}
-            />
-          ))}
-          {
+        {
             showAdding &&
             <tr className="tracking-wide text-gray-600 hover:text-black border-y-2">
               <td className="w-5 h-5">
@@ -135,6 +128,14 @@ const SuppliedTable = ({ initialData, editable, showAdding, vendorId }) => {
               </div>
           </tr>
           }
+          {initialData && initialData.map(item => (
+            <Row
+              key={item.entity_id}
+              data={item}
+              editable={editable}
+            />
+          ))}
+          
         </tbody>
       </table>
     </div>

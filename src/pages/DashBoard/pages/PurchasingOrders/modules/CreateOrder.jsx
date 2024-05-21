@@ -12,6 +12,7 @@ import { ORDER_STATUS } from '../../../../../utils/constant'
 import DetailsTable from './DetailsTable'
 import { formatCurrency, formatMaterialQuantity } from '../../../../../utils/utils'
 import SearchBar from '../../../../../components/SearchBar'
+import NonSelfSuggestSearchBar from '../../../../../components/SearchBar/NonSelfSuggest'
 
 import redXIcon from '../../../../../assets/icons/crud/x_icon_red.svg'
 import addIcon from '../../../../../assets/icons/crud/add_icon.svg'
@@ -81,7 +82,7 @@ const CreateOrder = () => {
    }
 
    const transferSuggestsOutData = (data) => {
-      console.log(data);
+      // console.log(data);
       setSelectedVendorMaterials(data);
    }
 
@@ -128,12 +129,12 @@ const CreateOrder = () => {
 
    const handleCreateNewOrder = async () => {
       if(selectedMaterialsForCreateOrder.length === 0 || selectedVendor.entity_id === ''){
-         alert('Please complete all fields!')
+         alert('Give all imformation please!')
       }else{
          await dispatch(createOrder(newOrderData));
          setNewOrderData(initialState);
          await dispatch(fetchOrders());
-         alert('Order created successfully!')
+         alert('Create new purchase order successfully!')
          navigate('/orders');
       }
    }
@@ -157,6 +158,7 @@ const CreateOrder = () => {
                   type="text"
                   editable={true}
                   onChange={(e) => handleNewOrderDataChange(e)}
+                  hasBorder={true}
                />
                <DataItem
                   label="Vendor ID"
@@ -194,13 +196,30 @@ const CreateOrder = () => {
                   editable={false}
                   viewOnly={true}
                />
-               <DataItem
+               {/* <DataItem
                   label="Due Date"
                   name="order_delivery_date"
                   type="date"
                   onChange={(e) => handleNewOrderDataChange(e)}
                   editable={true}
-               />
+               /> */}
+               <div className='flex w-auto place-content-between'>
+                  <label 
+                     htmlFor=""
+                     className='w-[40%]'
+                  >Due Date: 
+                  </label>
+                  
+                  <input 
+                     type="date" 
+                     name="order_delivery_date"
+                     className='bg-inherit border-2 rounded-md'
+                     onChange={(e) => handleNewOrderDataChange(e)}
+                  />
+                  <div className=''>
+
+</div>
+               </div>
                <DataItem
                   label="Total Amount"
                   name="order_total_amount"
@@ -218,10 +237,9 @@ const CreateOrder = () => {
                {
                   (selectedVendor !== null) && 
                   (
-                     <SearchBar 
+                     <NonSelfSuggestSearchBar 
                         endpoint={materialEndpoint} 
-                        selfSuggest={false}
-                        suggestionsDataOut={(data) => transferSuggestsOutData(data)}
+                        suggestionDataOut={(data) => transferSuggestsOutData(data)}
                         placeHolder='Search Material...'
                      />
                   )
@@ -320,6 +338,7 @@ const Row = ({ data, index, onChange, isRemovable, onRemove, onChangeQuantity })
                <input 
                   name={data.entity_id}
                   type="number" 
+                  className='text-center w-1/2'
                   value={quantity}
                   min={1}
                   onChange={(e) => handleChangeQuantity(e)}

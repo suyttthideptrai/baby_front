@@ -36,7 +36,7 @@ const VendorsPage
 
   async function fetchData() {
     await dispatch(fetchAllVendors());
-    console.log(allData);
+    //console.log(allData);
     dispatch(fetchTypes());
   }
 
@@ -83,7 +83,7 @@ const VendorsPage
     dispatch(setModalHeight('h-[150px]'));
     dispatch(setModalContent(
       <DeleteConfirmation 
-            text={"Are you sure to remove?"} 
+            text={"Are you sure want to delete selected vendors?"} 
             yes={confirmDelete} 
             no={cancelDelete} 
       />

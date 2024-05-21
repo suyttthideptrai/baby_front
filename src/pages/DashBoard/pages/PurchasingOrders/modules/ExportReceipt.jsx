@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import xIcon from '../../../../../assets/icons/crud/x_icon.svg'
 import DataItem from '../../../../../components/DataItem'
 import { convertISOToDate, formatCurrency, formatMaterialQuantity } from '../../../../../utils/utils'
-import { ORDER_STATUS } from '../../../../../utils/constant'
-import Dropdown from '../../../../../components/DropDown'
 import { HeaderButton } from '../../../../../components/ModuleHeader'
 import exportIcon from '../../../../../assets/icons/crud/export_button_icon.svg'
 import minusIcon from '../../../../../assets/icons/crud/minus_icon.svg'
@@ -13,7 +11,10 @@ import { exportGR } from '../../../../../redux/receipt/receiptSlice'
 import { useDispatch } from 'react-redux'
 
 const ExportReceipt = ({initialData, onLeave}) => {
+   // console.log(initialData.order_materials)
    const materialQuantities = initialData.order_materials.reduce((acc, material) => {
+      (material.material_quantity - material.material_actual_quantity === 0) ?
+      acc[material.material_id] = 0 :
       acc[material.material_id] = 1;
       return acc;
     }, {});
@@ -204,6 +205,9 @@ const Row = ({ data, index, onChangeQuantity }) => {
    }
 
    const increment = () => {
+      if(quantityCapacity === 0){
+         return;
+      }
       const q = parseInt(quantity)
       if(q === quantityCapacity){
          alert('Quantity must not exceed the remaining number!');
@@ -214,6 +218,9 @@ const Row = ({ data, index, onChangeQuantity }) => {
    }
 
    const decrement = () => {
+      if(quantityCapacity === 0){
+         return;
+      }
       const q = parseInt(quantity)
       if (q === 0) {
          alert('Quantity must be greater than 0!');
@@ -232,8 +239,9 @@ const Row = ({ data, index, onChangeQuantity }) => {
             <img onClick={decrement} src={minusIcon} alt="minus" className='w-3 h-3 cursor-pointer hover:bg-hover1 duration-200 rounded-sm' />
                <input 
                   type="number" 
-                  value={quantity}
+                  value={quantityCapacity === 0 ? 0 : quantity}
                   min={0}
+                  disabled={quantityCapacity === 0}
                   max={quantityCapacity}
                   onChange={(e) => handleChangeQuantity(e)}
                   placeholder='1'

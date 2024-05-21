@@ -42,7 +42,7 @@ const PurchasingOrdersPage = () => {
     dispatch(setModalHeight('h-[150px]'));
     dispatch(setModalContent(
       <DeleteConfirmation 
-            text={"Are you sure to remove?"} 
+            text={"Are you sure want to delete the selected orders?"} 
             yes={confirmDelete} 
             no={cancelDelete} 
       />
