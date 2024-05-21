@@ -88,7 +88,7 @@ export const deleteReceipts = createAsyncThunk(
     try {
       const endpoint = `${API_PREFIX}/receipt/delete`;
       const response = await fetch(endpoint, {
-        method: 'DELETE',
+        method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token

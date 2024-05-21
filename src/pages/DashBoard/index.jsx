@@ -49,22 +49,22 @@ function DashBoardPage() {
             <div className='flex-grow items-start h-[92%]'>
               <Routes>
                 <Route path="/" element={<WelcomePage />} />
-                <Route element={<RequiredRole allowedRoles={[ROLES.IND, ROLES.ADM]} />}>
+                {/* <Route element={<RequiredRole allowedRoles={[ROLES.IND, ROLES.ADM]} />}> */}
                   <Route path="/materials" element={<MaterialsPage />} />
                   <Route path="/exports" element={<ExportLog />} />
                   <Route path="/receipts" element={<GoodReceiptsPage />} />
                   <Route path="/receipts/details" element={<ReceiptDetails />}/>
                   <Route path="/orders/details" element={<OrderDetailsCreate isCreate={false} />} />
-                </Route>
-                <Route element={<RequiredRole allowedRoles={[ROLES.PUD, ROLES.ADM]} />}>
+                {/* </Route>
+                <Route element={<RequiredRole allowedRoles={[ROLES.PUD, ROLES.ADM]} />}> */}
                   <Route path="/orders" element={<PurchasingOrdersPage />} />
                   <Route path="/orders/new" element={<CreateOrder />} />
-                </Route>
-                <Route element={<RequiredRole allowedRoles={[ROLES.ADM]} />}>
+                {/* </Route> */}
+                {/* <Route element={<RequiredRole allowedRoles={[ROLES.ADM]} />}> */}
                   <Route path="/vendors" element={<VendorsPage />} />
                   <Route path="/vendors/details" element={<VendorDetails />} />
                   <Route path="/user" element={<UsersPage />} />
-                </Route>
+                {/* </Route> */}
                 {/* <Route path="/about" element={<AboutPage />} /> */}
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/unauthorized" element={<Unauthorized />} />

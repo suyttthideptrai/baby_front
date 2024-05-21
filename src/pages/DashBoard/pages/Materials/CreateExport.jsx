@@ -121,9 +121,9 @@ const CreateExport = ({ exit, initialData }) => {
          className='w-6 h-6 cursor-pointer hover:scale-150 transition-all duration-200 ease-in-out'
       src={xIcon} alt="leave" onDoubleClick={handleExit} />
    </div>
-   {
+   {/* {
        JSON.stringify(materialQuantities)
-   }
+   } */}
    {
          materialQuantities ?
          <div className='flex place-content-between p-5 text-lg border-b-2 border-black mx-5 font-alata'>

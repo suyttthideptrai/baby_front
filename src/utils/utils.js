@@ -57,3 +57,17 @@ export function convertISOToDate(isoDateString) {
     
         return `${day}/${month}/${year} ${hours}:${minutes}`;
     }
+
+
+export const hasRole = (userRole, requiredRole) => {
+        return userRole === requiredRole;
+};
+
+export const hasAnyRole = (userRole, requiredRoles) => {
+        for(let role of requiredRoles) {
+                if (userRole === role) {
+                        return true;
+                }
+        }
+        return false;
+};

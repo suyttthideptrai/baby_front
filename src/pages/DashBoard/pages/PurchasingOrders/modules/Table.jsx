@@ -44,8 +44,9 @@ const Table = ({ initialData }) => {
     navigate('/orders/details')
   }
 
-  const handleRowNavigateVendor = (id) => {
-    dispatch(setVendorDetailsId(id));
+  const handleRowNavigateVendor = async (id) => {
+    
+    await dispatch(setVendorDetailsId(id));
     dispatch(clearOrderIds());
     navigate('/vendors/details')
   }
